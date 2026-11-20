@@ -1,0 +1,456 @@
+# DrPhill — design and maintenance guide
+
+Version 0.2.0 · snapshot of 20 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+
+DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
+
+Contents
+
+1. Status
+2. How a save becomes a web page
+3. File map
+4. Content format (the contract between content and design)
+5. How the pages are assembled
+6. Design decisions and rationale
+7. Standards applied
+8. Browser support and fallbacks
+9. Testing
+10. How to change things
+11. Known limitations and open questions
+12. History
+13. Credits and licences
+
+---
+
+## 1. Status
+
+| Area | State |
+|---|---|
+| Hugo build (0.147.0 extended), at a subfolder address | **Tested locally**: clean, no warnings |
+| Layout, menu, sticky header, accessibility checks in Chrome (390, 700, 1440 px) | **Tested locally**: all checks in `dev/check_site.py` pass |
+| Empty sections disappear from page and menu | **Tested locally** |
+| Project layout for 1, 2, 3, 4, 5 and 7 projects, at laptop and phone widths | **Tested locally** (0.2.0) |
+| AI opt-out tags and robots.txt (on and off), structured data, sitemap | **Tested locally** (0.2.0): output checked; JSON-LD parses |
+| Colour schemes (both) | **Tested locally** (0.2.0): contrast of every pairing (`dev/check_palettes.py`); each scheme built and rendered in Chrome |
+| Typeface choice (four pairings and an invalid value) | **Tested locally** |
+| Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
+| GitHub Actions build and deploy | **Not yet tested** (no repository yet) |
+| Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
+| `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
+| Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
+| Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
+| Pages CMS forms (Profile, Projects, Gallery, Education, Tools, Appearance) | **Not yet tested** |
+| Pages CMS image uploads flowing into Hugo image processing | **Not yet tested** |
+| Other browsers (Safari, Firefox), real phones | **Not yet tested** |
+
+**Next step:** a demo repository on GitHub, so the untested rows above can be checked end to end (build, Pages CMS forms and uploads, real phones). Then: optional long project pages ("case studies"; three approaches under discussion: headings and images in the Description field, a structured Sections list, or a separate linked page).
+
+Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
+
+A clickable preview of the sample site exists as a private Claude artifact ("DrPhill – preview"). It was built with relative links so it works as an artifact; that variation is not part of the source.
+
+---
+
+## 2. How a save becomes a web page
+
+```mermaid
+flowchart LR
+  S[Student] -->|edits a form| P[Pages CMS]
+  P -->|commits Markdown/YAML and original images| R[(GitHub repository)]
+  R -->|push triggers| A[GitHub Actions: hugo.yml]
+  A -->|Hugo builds: templates + content,<br/>resizes images to WebP| B[Built site]
+  B -->|deploy| G[GitHub Pages<br/>username.github.io/repo/]
+```
+
+- **Pages CMS** is only an editor. It never runs Hugo. It commits the student's files (and original uploads) to the repository.
+- **GitHub Actions** runs `.github/workflows/hugo.yml` on every push: installs Hugo 0.147.0 extended, builds with `--baseURL` set to the Pages address, uploads the result.
+- **GitHub Pages** serves the result. The built site is never committed back; the repository holds only what students made, plus the theme.
+- A failed build leaves the previous site live. A successful one is public within a minute or two.
+
+---
+
+## 3. File map
+
+```
+DrPhill/                                  ← one repository per student (copied from the template)
+├── README.md                             student-facing: how to edit, where content lives
+├── CLAUDE.md                             instructions for Claude when maintaining the theme
+├── hugo.toml                             site settings, image mounts, education cascade
+├── .pages.yml                            the six Pages CMS forms
+├── .github/workflows/hugo.yml            build + deploy on every push (Hugo pinned)
+├── .gitignore
+│
+├── content/                              ── STUDENT CONTENT (portable Markdown) ──
+│   ├── _index.md                         Profile: name, expertise, email, linkedin, github, links, resume; body = About
+│   ├── projects/*.md                     one per project; body = description; each gets its own page
+│   ├── gallery/*.md                      one per image; body = caption; each gets its own page
+│   └── education/*.md                    one per degree; body = optional detail; no pages of their own
+├── data/
+│   ├── tools.yaml                        list of {name, note}
+│   └── style.yaml                        {palette, text, titles}: colour scheme and typefaces (appearance, not content)
+├── static/
+│   ├── images/                           uploads (originals; only resized copies are published)
+│   └── files/                            résumé etc.
+│
+├── themes/DrPhill/                       ── DESIGN (the same for every student) ──
+│   ├── theme.toml, LICENSE               name, version, MIT licence (fonts excluded)
+│   ├── assets/css/
+│   │   ├── main.css                      all styles; numbered contents; settings in section 1
+│   │   └── fonts.css                     @font-face rules (generated by dev/build_fonts.py)
+│   ├── static/fonts/<key>/               WOFF2 files + OFL.txt for atkinson, inter, source-serif, fraunces
+│   └── layouts/
+│       ├── _default/baseof.html          page shell: <head>, typeface choice, CSS, skip link, script
+│       ├── _default/single.html, list.html, 404.html     fallback pages
+│       ├── _default/_markup/render-image.html            images in Markdown → responsive image
+│       ├── _default/_markup/render-link.html             links in Markdown → repaired addresses
+│       ├── index.html                    home page: projects, then sections
+│       ├── projects/single.html          a project's page
+│       ├── projects/list.html            All projects page (exists, not linked from the home page since 0.2.0)
+│       ├── gallery/list.html             Gallery page: square thumbnails
+│       ├── gallery/single.html           one image, whole, with title and caption
+│       ├── robots.txt                    AI-training opt-out + sitemap address (published as /robots.txt)
+│       └── partials/
+│           ├── sections.html             ★ which sections exist (drives page AND menu)
+│           ├── masthead.html             sticky header: name, menu, expertise
+│           ├── name-lines.html           splits the name into two even rows for the header
+│           ├── nav.html                  section menu (row on wide screens, Menu button on narrow)
+│           ├── project-card.html         image + title + caption card
+│           ├── gallery-items.html        gallery entries that have an image, in order
+│           ├── pager.html                previous / next links (project and gallery pages)
+│           ├── section-education.html, section-tools.html, section-about.html, section-contact.html
+│           ├── education-entries.html    education entries that have content, in order
+│           ├── bottom-block.html         closing block: name, expertise, contact links
+│           ├── analytics.html            optional GoatCounter or Cloudflare script (Profile choice)
+│           ├── img.html                  ★ every image: WebP srcset, sizes, width/height, lazy
+│           └── url.html                  ★ every link: adds https://, fixes subfolder paths
+│
+├── docs/DESIGN.md                        this guide
+└── dev/                                  maintainer tools (not used by the build)
+    ├── check_site.py                     browser checks (Playwright + Chrome)
+    ├── check_content.py                  .pages.yml and content files parse; every key has a form field
+    ├── check_palettes.py                 contrast check of every colour scheme, read from main.css
+    ├── build_fonts.py                    regenerate fonts from Fontsource
+    └── make_placeholders.py              regenerate the labelled sample images
+```
+
+★ = the three partials most other templates depend on.
+
+---
+
+## 4. Content format (the contract between content and design)
+
+The design reads these files and fields. A future theme can replace `themes/DrPhill/` entirely; as long as it reads the same fields, no student content and no Pages CMS form has to change.
+
+### `content/_index.md` (Profile form)
+
+| Field | Type | Notes |
+|---|---|---|
+| `name` | string, required | Header, browser tab, favicon initials, bottom block |
+| `expertise` | string | One line under the name; also the page description |
+| `email` | string | Contact section and bottom block |
+| `linkedin` | string (URL) | Menu button (opens LinkedIn), bottom block, structured data; empty = no button |
+| `github` | string (URL) | Menu button (opens GitHub), bottom block, structured data; empty = no button |
+| `links` | list of `{label, url}` | Other sites; Contact section and bottom block |
+| `resume` | file path | `files/…pdf`; Contact section button |
+| `aiTraining` | boolean, default `false` | `false` adds the AI-training opt-out (page tags and robots.txt); `true` removes it |
+| `googleVerification` | string | Google Search Console HTML-tag verification code; empty = no tag |
+| `analytics` | `none`, `goatcounter` or `cloudflare` | Visitor statistics service; default `none` |
+| `analyticsCode` | string | GoatCounter code (or its address), or Cloudflare token (or the whole snippet); the template picks the code out |
+| *body* | Markdown | The About section; empty = no About section |
+
+### `content/projects/<slug>.md` (Projects form; one file per project)
+
+| Field | Type | Notes |
+|---|---|---|
+| `title` | string, required | Card title, page title |
+| `caption` | string | One line under the card image and page title |
+| `weight` | number | Order, 1 first. Layout by count: see section 5 |
+| `image` | path | `images/…`; 1800 × 1200 (3:2) recommended |
+| `alt` | string | Image description for screen readers |
+| `year`, `role` | string | Shown under the project page title |
+| `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
+| `tags` | list of strings | Shown on the project page |
+| *body* | Markdown | The project description |
+
+### `content/gallery/<slug>.md` (Gallery form; one file per image)
+
+| Field | Type | Notes |
+|---|---|---|
+| `title` | string, required | Image page title; previous/next link text |
+| `image` | path, required | `images/…`; any shape, up to 2000 px on the long side |
+| `alt` | string | Image description; also the thumbnail link's name |
+| `weight` | number | Order; 1 first |
+| *body* | Markdown | The caption under the image on its own page |
+
+Entries without an image are left out of the Gallery page and the previous/next links. With no entries that have images, there is no Gallery page and no menu link.
+
+### `content/education/<slug>.md` (Education form; one file per entry)
+
+| Field | Type | Notes |
+|---|---|---|
+| `degree` | string, required | Entry title |
+| `school` | string | Under the title |
+| `year` | string | At the right, e.g. "2027" or "2023–2027" |
+| `weight` | number | Order; 1 first |
+| *body* | Markdown | Optional detail |
+
+Entries with neither `degree` nor `school` are skipped. Education entries are not published as pages (see the `[[cascade]]` in `hugo.toml`).
+
+### `data/tools.yaml` (Tools form)
+
+A list of `{name, note}`. Items without a `name` are skipped.
+
+### `data/style.yaml` (Appearance form)
+
+`palette`: `ink` (white, blue accent) or `dusk` (pale lavender, violet accent). `text` and `titles`: each one of `atkinson`, `inter`, `source-serif`, `fraunces`. Missing or unrecognised values fall back to `ink`, `atkinson` (text) and `fraunces` (titles).
+
+### Rules that apply to every file
+
+- Paths have no leading slash (`images/x.jpg`, not `/images/x.jpg`).
+- Every key in a file that Pages CMS edits appears as a field in `.pages.yml`, so saving a form never drops a key.
+
+---
+
+## 5. How the pages are assembled
+
+**Home page** (`index.html`), top to bottom:
+
+1. **Header** (`masthead.html`, sticky): name (the page's `<h1>`), section menu (`nav.html`), area of expertise. Wide screens (header 640 px and up): the name on two rows at the left, the menu at the right level with the top of the name, the expertise line across the full width below. Narrow screens: the name on one line, with the Menu button beside it.
+2. **Projects**: all of them, in Order, laid out by how many there are:
+
+   | Projects | Layout | Row class |
+   |---|---|---|
+   | 1 | One wide project | none |
+   | 2 | Two side by side (no wide feature) | `projects__row--2` |
+   | 3 | One wide, then two side by side | `projects__row--2` |
+   | 4 or more | One wide, then rows of three; a part-filled last row lines up from the left | `projects__row--3` |
+
+   The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px.
+3. **Education**, **Tools**, **About**, **Contact**, each only if it has content.
+4. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
+
+**One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery (a separate page, not a home-page section), Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
+
+**Project page** (`projects/single.html`): header (name links home; menu links go to `home#section`), title, year · role, caption, full image (uncropped), description, link buttons, tags, previous/next project in home-page order, bottom block.
+
+**Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery" marked as the current page), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
+
+**Gallery image page** (`gallery/single.html`): "← Gallery" link, the whole image (uncropped, at most 80% of the screen's height, centred on a tinted panel), title, caption, previous/next image (`pager.html`, shared with project pages), bottom block.
+
+**All projects page** (`projects/list.html`): every project as a card, in order. Since 0.2.0 the home page shows every project, so nothing links here; Hugo still builds it at `/projects/`.
+
+**Every image** goes through `img.html`; every student-typed link goes through `url.html`, including images and links written inside Markdown (render hooks).
+
+---
+
+## 6. Design decisions and rationale
+
+Each decision lists what was chosen, why, and what was set aside.
+
+**Build our own theme instead of adapting a third-party one.**
+Every third-party theme tried (kiyomi-portfolio, Developer Portfolio, and reviews of hugo-profile and hugo-myportfolio-theme) needed its templates repaired: sample text, subfolder paths, outside fonts, links without `https://`, empty sections. A department-defined content format means rewriting a theme's templates anyway. Writing our own costs about the same and leaves no inherited problems. Risk accepted: visual design quality is ours to judge; there is no upstream community.
+
+**Content in Markdown files with front matter, one file per item.**
+Two goals: students can take their content to any other site, and we can change themes with little effort. Markdown with front matter is the closest thing static-site tools have to a common format (Hugo, Jekyll, Eleventy, Astro and Obsidian all read it), and each file reads as a document on its own. Set aside: YAML lists in `data/` (PortfolioConcept's approach), which only make sense with the template that reads them, and prose stored inside YAML strings.
+
+**Tools as one YAML list.**
+Short facts suit a list, and a file per tool would be tedious to edit. Slightly less portable; accepted.
+
+**Appearance in `data/style.yaml`, separate from content.**
+Typeface choice is presentation. Keeping it out of the content files means a student moving elsewhere takes words and images, not settings for this theme.
+
+**Sections and menu buttons appear only when filled in.**
+Students will leave things blank. Empty headings and buttons that lead nowhere make a portfolio look unfinished. Implemented once, in `sections.html`, so page and menu cannot disagree.
+
+**Sticky header with menu, name and expertise.**
+The name stays visible on every screen (a portfolio guideline: "your name at the top of every screen"). About 14% of a phone screen, 18% of a tablet and 27% of a 1440 × 820 laptop screen; not sticky on short screens (phones held sideways), where it would cover more than a quarter. Set aside for now: a header that shrinks as the page scrolls (possible in CSS alone; not supported in Firefox yet).
+
+**Name on two rows, menu beside it at the top** (0.2.0, replacing a menu row above the name).
+The menu row above the name sat too close to it to read as separate and lined up with nothing in it. Now the name is set as a two-row block, which gives the menu a clear place to its right, aligned with the top of the capitals. The template splits the name between words into two rows of about equal length (`name-lines.html`: "Mary Ann / de la Cruz"); a one-word name stays one row. Splitting in the template, rather than relying on the browser's line breaking, gives the same result in every browser and at every width. If space runs short, the menu wraps into more lines before the name does. Cost: the header is taller (27% of a laptop screen against 21%). Considered: more space or a rule under the menu row; the menu below the expertise line; a shaded menu strip across the top; menu on the name's line with the name on one row.
+
+**Phone menu as a `<details>` element with a small script.**
+`<details>` opens and closes without JavaScript in every browser. A dozen lines of script add closing after a choice, on Escape, and on a tap elsewhere; without the script the menu still works. Set aside: the Popover API (light-dismiss built in, but Safari support only since 17) and a JavaScript-only menu.
+
+**Project layout follows the number of projects** (0.2.0; 0.1.0 always showed one wide and three).
+A fixed one-plus-three layout left gaps for students with fewer projects and hid the rest for students with more. Now: one project is shown wide; two share a row equally (neither is demoted to a thumbnail); three or more get one wide feature, the strongest work, then the rest at a uniform size in rows of two (for three projects) or three. A part-filled last row aligns left rather than centring, so columns line up down the page. The count is decided in the template rather than by CSS counting tricks (`:has()` quantity queries), which keeps the rule readable in one place and works in every browser. Fixed 2:1 and 3:2 frames keep cards aligned whatever students upload; the project page shows the whole image uncropped.
+
+**Gallery: one page per image, rather than a pop-up viewer** (0.2.0).
+Each thumbnail links to a plain page with the whole image, a title and a caption. This needs no script, works with the browser's Back button, gives every image its own address to share and its own search-engine entry (`CreativeWork`), and suits captions longer than a line. Thumbnails are square crops in a uniform grid, without visible titles, so the grid reads as a set of images. Set aside: a script-driven lightbox (needs focus trapping, keyboard handling and history management to be accessible, and loses per-image addresses); the `<dialog>` element (accessible, but still needs a script to open); CSS `:target` overlays (no focus management; Back-button behaviour is confusing); a masonry layout keeping each image's shape (CSS masonry is not yet in all browsers).
+
+**Hugo makes the image sizes.**
+Students upload originals, often several megabytes from a phone or camera. At build time Hugo makes WebP copies at up to five widths (never larger than the original), turns phone photos upright, and the page tells each browser which to download. Originals are not published (`excludeFiles` in `hugo.toml`). Set aside: asking students to export at the right size (they won't, reliably), and an image CDN (an outside service).
+
+**Four self-hosted typefaces, two serif and two sans-serif.**
+Consistent appearance across devices without requests to Google or any other company. Variable WOFF2 files, Latin and Latin Extended (names like Łukasz or Dvořák display correctly), about 100–150 KB per page. Chosen for range: Atkinson Hyperlegible Next (legibility), Inter (neutral), Source Serif 4 (classic text serif), Fraunces (expressive display serif). Set aside: system font stacks (no download, but they look different on each device) and Google Fonts (outside requests).
+
+**Two light colour schemes with a coloured accent.**
+Students choose Ink or Dusk in the Appearance form; the template writes `data-palette` on `<html>` and section 2 of `main.css` swaps the nine `--color-*` variables. Each scheme keeps dark text on a light, slightly tinted background, a dark bottom block in the scheme's hue, and one accent colour used for links in running text, contact links, buttons, focus rings, the open Menu button and hover states. Every text pairing in both schemes meets WCAG AA (lowest 5.2:1), checked by `dev/check_palettes.py`, which reads the colours from the stylesheet itself. Set aside for now: dark schemes and following the visitor's dark-mode setting (each would need its own checks of image placeholders, focus rings and the header shadow); free colour pickers (students could choose unreadable combinations).
+
+**Plain CSS, no framework, no build step for styles.**
+Hugo only concatenates, minifies and fingerprints. Every colour, typeface, size and space is a custom property in section 1 of `main.css`, so a different look is mostly a matter of changing those. Class names follow the template file that outputs them, so finding the CSS for a piece of the page means searching for its template's name.
+
+**Mobile first, with container queries.**
+Base rules serve the narrowest screens. Wider layouts respond to the space a component has, not the window, which also keeps the layout correct inside narrow panels and previews.
+
+**Cards with a "stretched link".**
+The title is the link; a CSS overlay makes the whole card clickable. Screen readers hear "Project Two", not the whole card read out as one long link.
+
+**Address repair (`url.html`).**
+Students type `www.linkedin.com/in/name` or `name.itch.io/game`. Without repair these become broken links inside the student's own site. Every link field and every link in Markdown goes through one helper that adds `https://` to web addresses and makes site paths work in a subfolder.
+
+**AI-training opt-out on by default, search left open.**
+Students' work is theirs (Miami's policy recognises student ownership), and most will not want it used to train AI models without being asked. The opt-out is layered because no single signal is honoured by everyone, and because `robots.txt` is read only at the root of a host while most student sites live in a subfolder:
+- **Every page** carries `<meta name="tdm-reservation" content="1">` (W3C TDM Reservation Protocol; the machine-readable form of the text-and-data-mining opt-out recognised by EU copyright law) and `<meta name="robots" content="noai, noimageai">` (informal; honoured by some dataset builders, ignored by search engines).
+- **`robots.txt`** disallows the documented AI-training crawlers and control tokens (GPTBot, ClaudeBot, anthropic-ai, Google-Extended, Applebot-Extended, CCBot, meta-externalagent, Bytespider, Amazonbot) and states the preference again in the two newer vocabularies (IETF aipref `Content-Usage: train-ai=n, search=y`, an unratified draft; Cloudflare `Content-Signal: search=yes, ai-train=no`). Effective only when the site is at a host's root.
+- **Search and AI search crawlers are not blocked** (Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot…), so students stay findable, including in AI answers that cite sources. Blocking Google-Extended does not affect Google Search.
+- **Limits:** these are requests, not enforcement. HTML tags cover pages, not image files fetched directly. GitHub Pages cannot send custom HTTP headers, so the `Content-Usage`/`tdm-reservation` header forms are unavailable.
+Set aside: blocking all AI crawlers including search ones (costs visibility), and a site-wide `.well-known/tdmrep.json` (root-only, like `robots.txt`).
+
+**Visitor statistics: a choice of two cookieless services, off by default** (0.2.0).
+A dropdown in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and one code field; `analytics.html` writes the service's script at the end of the page. Both set no cookies and collect no personal data, so no consent banner is needed, which keeps the site consistent with its AI-training opt-out. GoatCounter: the simplest sign-up (the student chooses a code), free for personal sites, but run by one person on donations. Cloudflare: backed by a large company, adds page-speed figures, but sign-up and copying a snippet take more steps. Students may paste a whole address or snippet; the template picks out the code, and anything unrecognised adds nothing and logs a build warning (shown in the GitHub Actions tab). Nothing is added during local previews (`hugo server` runs in the development environment). Numbers are private to the student; no count appears on the page. Set aside: Google Analytics (uses cookies; consent issues for visitors in the EU), Umami Cloud (free-plan limits vary), a public on-page counter (low numbers can work against a student), and the department-hosted counter drafted for colophon.org (requires running a server).
+
+**SEO: what the theme does, what students do.**
+The theme supplies the technical basics: descriptive `<title>` and description, canonical address, sharing previews, a sitemap (listed in `robots.txt`), structured data (a schema.org `Person` on the home page, a `CreativeWork` with creator, image, year and keywords on each project page), fast pages, real headings, alt text, and an optional Google Search Console verification field. The rest is content and links, which only students can provide; the README says so in four sentences. The unlinked All projects page is kept out of the sitemap.
+
+**Small decisions**
+
+- Favicon: the student's initials drawn as SVG inside the page. No file to upload, no missing-icon request.
+- Sharing preview: a 1200 × 630 crop of the project image (on the home page, the feature project's).
+- Search data: a schema.org `Person` with the student's links.
+- Education entries have no pages of their own; projects do.
+- The bottom block repeats contact links, so a visitor who reaches the end can act without scrolling back.
+
+---
+
+## 7. Standards applied
+
+- **HTML:** semantic landmarks (`header`, `nav`, `main`, `section`, `article`, `footer`); one `<h1>` per page and no skipped heading levels; `lang` set; skip link; `aria-label`s on navigation and lists; `rel="me"` on the student's own profiles.
+- **Accessibility:** WCAG AA contrast (lowest is 6.1:1); visible keyboard focus everywhere; tap targets at least 44 px in the phone menu; text sizes that scale with zoom (fluid sizes mix rem and vw); alt text required by the form; `prefers-reduced-motion` respected; Windows High Contrast keeps borders.
+- **Performance:** responsive WebP images with `srcset`/`sizes`; `width`/`height` on every image (no layout shift); lazy loading except the feature image (`fetchpriority="high"`); fonts preloaded; one fingerprinted stylesheet (browsers fetch a changed one at once); no outside requests; sample site about 400 KB before fonts.
+- **CSS:** custom properties for every design value; logical properties; BEM-style names matching template files; numbered table of contents; each newer feature either ignored safely or preceded by a fallback.
+- **JavaScript:** only small enhancements the page works without (phone-menu closing, header height measurement). No libraries.
+- **Privacy:** no analytics, no trackers, no outside fonts or scripts.
+- **AI training preference:** TDMRep and `noai` page tags; `robots.txt` with AI-training crawler groups, IETF aipref `Content-Usage` and `Content-Signal` lines (section 6).
+- **Search:** canonical URLs, sitemap, schema.org `Person` and `CreativeWork` structured data, Open Graph and Twitter card tags, optional Search Console verification.
+
+---
+
+## 8. Browser support and fallbacks
+
+Target: current versions of Chrome, Edge, Safari (macOS and iOS) and Firefox. Older browsers get a simpler but complete page.
+
+| Feature | Used for | Without it |
+|---|---|---|
+| Container queries | Three-across row; menu row on wide screens | Phone layout at every width |
+| Container units (`cqi`) | Wide feature height | Window units (`vw`) |
+| `svh` | Spacing that ignores a phone's sliding address bar | `vh` |
+| `:has()` | Focus ring around a whole card | Focus ring on the title link |
+| Scroll-driven animation | Line under the header appears on scroll | Line always shown |
+| `text-wrap: balance / pretty` | Even line breaks in headings and paragraphs | Normal line breaks |
+| `ResizeObserver` (script) | Menu jumps land exactly below the header | An estimate based on screen width |
+| JavaScript off | Phone menu closes after a choice | Menu closes with its button |
+
+---
+
+## 9. Testing
+
+**Local build:**
+```
+hugo --minify --baseURL "http://localhost:8765/TestRepo/" -d /tmp/srv/TestRepo
+(cd /tmp/srv && python3 -m http.server 8765 &)
+python3 -I dev/check_site.py http://localhost:8765/TestRepo/
+```
+Also run `python3 -I dev/check_content.py` (configuration and content files parse; every key has a form field) and `python3 -I dev/check_palettes.py` (colour contrast).
+
+Building at a subfolder address matters: it is how GitHub Pages serves student sites, and it catches paths with a leading slash.
+
+**What `dev/check_site.py` checks:** console errors; one `<h1>` and no skipped heading levels; alt text and dimensions on every image; no empty links or duplicate ids; keyboard order; and at phone, tablet and laptop sizes: header height, no sideways scrolling, feature caption above the fold, every menu jump landing just below the header, and the phone menu closing correctly.
+
+**Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
+
+**Still to test (in this order):** first GitHub build; each Pages CMS form opens and saves; an image uploaded through Pages CMS appears resized on the live site; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
+
+---
+
+## 10. How to change things
+
+**Colours, sizes, spacing:** edit the custom properties in section 1 of `themes/DrPhill/assets/css/main.css`. Keep contrast at 4.5:1 or above for text.
+
+**Which elements use the title typeface:** section 2 of `main.css`.
+
+**Add or change a colour scheme:** add a `[data-palette="name"]` block in section 2 of `main.css` (all nine `--color-*` variables), add the name to `$palettes` in `baseof.html` and to the Colour scheme field in `.pages.yml`, then run `python3 -I dev/check_palettes.py` and fix any failing pairing.
+
+**Add a section** (e.g. Publications):
+1. Decide the content format: a folder of Markdown files (`content/publications/`) if entries have prose, or a list in `data/` if they are short facts.
+2. If a folder, add a `[[cascade]]` in `hugo.toml` so the entries are not published as pages (copy the Education one).
+3. Add a condition to `partials/sections.html` (in menu order).
+4. Write `partials/section-publications.html` (copy `section-education.html`).
+5. Add `{{ if $has.publications }}{{ partial "section-publications.html" . }}{{ end }}` to `index.html`.
+6. Add a Pages CMS form to `.pages.yml`, with a field for every key.
+7. Style it in section 9 of `main.css` if the existing `.entry` styles don't fit.
+8. Update this guide (sections 3–5) and the README form table.
+
+**Add or swap a typeface:** see the instructions at the top of `dev/build_fonts.py`; then update section 1 and 2 of `main.css`, the `$fonts` map in `baseof.html`, and both select fields in `.pages.yml`.
+
+**Replace the design entirely:** write a new theme folder that reads the fields in section 4, set `theme =` in `hugo.toml`. Student content and `.pages.yml` stay as they are.
+
+**After students have copied the template:** copies made with "Use this template" do not receive later changes. Either give students a replacement file to paste in, or (structural alternative, not yet set up) load the theme as a Hugo Module so a theme update reaches every site on its next build, at the cost of one bad update breaking every site at once.
+
+**Before marking the repository as a template for students:** consider removing `docs/`, `dev/` and `CLAUDE.md` from the copy students receive (they do no harm, but students don't need them), replace sample content if desired, and run the full test list in section 9.
+
+---
+
+## 11. Known limitations and open questions
+
+- **Untested on GitHub and in Pages CMS** (section 1).
+- **Pages CMS image paths:** media output is set to `images` (no leading slash); confirm that uploads are saved as `images/…` so `img.html` finds them.
+- **Pages CMS file names:** collections use `filename: "{primary}.md"`; confirm the names it generates.
+- **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
+- **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
+- **Phones held upright:** rows of three stack into one column; pairs stay side by side (each about 170 px wide on a 390 px phone). Alternatives considered for threes: three tiny columns, or a sideways-scrolling strip.
+- **Gallery entries without an image** are hidden from the Gallery page but Hugo still builds a page for them (unlinked). The Pages CMS form marks the image as required, so this should only happen through direct file edits.
+- **Gallery thumbnails crop to squares**, so a panorama shows only its middle. A student can choose what is in the middle; a focal-point field would need one more form field.
+- **Many projects:** every project appears on the home page, so a student with twelve projects gets four rows. A cap (e.g. show the first seven, link to All projects for the rest) is a one-line change if wanted.
+- **Scripts covered:** Latin and Latin Extended only. Greek, Cyrillic or Vietnamese names would show in fallback fonts; add those subsets in `dev/build_fonts.py` if needed.
+- **Repository weight:** about 700 KB of font files in every student repository (visitors download only what is used).
+- **Build time:** image processing adds a few seconds per build; Hugo's cache (`resources/_gen`) is not kept between GitHub builds.
+- **robots.txt and subfolder sites:** crawlers read `robots.txt` only at a host's root, so on `username.github.io/repo/` it is ignored; only the page tags apply. Naming the student's repository `username.github.io` (site at the root) or using a custom domain makes `robots.txt` effective and gives a cleaner address.
+- **AI preference standards are moving:** IETF aipref is a draft; review the crawler list and vocabulary lines in `layouts/robots.txt` each year.
+- **Sitemap dates:** Hugo could give real "last modified" dates from Git (`enableGitInfo`), but the workflow's shallow checkout would make them wrong; it would need `fetch-depth: 0` in the workflow. Not done.
+- **Analytics services can change their terms.** GoatCounter is free for personal sites under a "reasonable use" policy; Cloudflare's free Web Analytics allows 10 sites per account that are not routed through Cloudflare (enough for one student). Ad blockers stop both, so counts run low. Untested with real accounts: confirm that visits appear in each dashboard.
+- **Private repositories:** on GitHub's free plan Pages publishes only from public repositories, so students' Markdown and original uploads are public on github.com, outside the site's AI opt-outs. GitHub Pro (free to verified students) allows a private repository; what happens to the site when Pro lapses after graduation is unconfirmed.
+- **Ownership after graduation:** students' own GitHub accounts vs. department-owned repositories; undecided (see the instructor setup guide).
+
+---
+
+## 12. History
+
+19 November 2026 — version 0.1.0, built in one working session:
+1. Reviewed hugo-profile and hugo-myportfolio-theme against the project's lessons; decided on a department content format in Markdown and an own theme.
+2. Layout: name, expertise, wide feature, row of three, large closing block.
+3. Mobile first; container queries; responsive images built by Hugo; accessible cards; skip link; structured data; favicon from initials.
+4. Sticky header with name and expertise; section menu at the top (Menu button on phones); Education, Tools, About, Contact sections that appear only when filled in; LinkedIn button.
+5. Four self-hosted typefaces chosen in `data/style.yaml`.
+6. Stylesheet reorganised: numbered contents, settings as custom properties, class names matching templates, fallbacks documented.
+7. Named DrPhill; documentation, test and font scripts added.
+
+19 November 2026 — version 0.2.0:
+1. Project layout depends on the number of projects (1: wide; 2: two side by side; 3: wide + two; 4 or more: wide + rows of three filling from the left). All projects appear on the home page; the "All projects →" link was removed.
+2. Small cards in pairs get their own image size hints, so browsers download the right width.
+3. The section menu row (wide screens) is right-aligned.
+4. AI-training opt-out (Profile switch, off by default): TDMRep and `noai` page tags, `robots.txt` with AI-training crawler groups and `Content-Usage`/`Content-Signal` lines. SEO: `robots.txt` with sitemap, `CreativeWork` structured data on project pages, optional Search Console verification tag, All projects page removed from the sitemap.
+5. Two light colour schemes (Ink, Dusk; Paper and Sage were tried and dropped) chosen in Appearance; a coloured accent for links, buttons, focus and hover; `dev/check_palettes.py`.
+6. Fixed: `.pages.yml` did not parse (an unquoted description containing a colon); Pages CMS would have rejected it. Added `dev/check_content.py`.
+7. Gallery: a Gallery form; a `/gallery/` page of square thumbnails; a page per image with the whole image, title, caption and previous/next links; a menu link that appears only when there are gallery images. Previous/next links moved into a shared `pager.html`.
+8. Header: the name on two even rows at the left, the menu at the right level with the top of the name (wide screens).
+9. GitHub address in Profile: a GitHub button at the end of the menu (after LinkedIn), a link in the bottom block, and in the structured data's `sameAs` (LinkedIn added there too; it had been missing).
+10. Visitor statistics: an Analytics choice in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and a code field; README instructions for each.
+
+---
+
+## 13. Credits and licences
+
+- **Theme:** © 2026 Garrison LeMasters; MIT licence (`themes/DrPhill/LICENSE`).
+- **Fonts** (SIL Open Font License 1.1; licence files in `themes/DrPhill/static/fonts/<key>/OFL.txt`):
+  Atkinson Hyperlegible Next (Braille Institute of America), Inter (Rasmus Andersson / The Inter Project Authors), Source Serif 4 (Adobe; Frank Grießhammer), Fraunces (Undercase Type / The Fraunces Project Authors). Files from Fontsource (fontsource/font-files).
+- **Tools:** Hugo (Apache 2.0), Pages CMS (MIT), GitHub Actions and Pages.

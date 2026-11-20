@@ -1,0 +1,38 @@
+{{ define "main" }}
+{{ partial "masthead.html" . }}
+
+<main id="main" class="wrap project">
+  <article>
+    <header class="project__head">
+      <h1 class="project__title">{{ .Title }}</h1>
+      {{- $meta := slice -}}
+      {{- with .Params.year }}{{ $meta = $meta | append . }}{{ end -}}
+      {{- with .Params.role }}{{ $meta = $meta | append . }}{{ end -}}
+      {{- with $meta }}<p class="project__meta">{{ delimit . " · " }}</p>{{ end }}
+      {{- with .Params.caption }}<p class="project__caption">{{ . }}</p>{{ end }}
+    </header>
+
+    {{- with .Params.image }}
+    <figure class="project__image">
+      {{ partial "img.html" (dict "src" . "alt" ($.Params.alt | default "") "eager" true "sizes" "(min-width: 74rem) 69rem, 94vw") }}
+    </figure>
+    {{- end }}
+
+    {{- with .Content }}<div class="project__body">{{ . }}</div>{{ end }}
+
+    {{- $links := where (.Params.links | default slice) "url" "!=" "" -}}
+    {{- with $links }}
+    <ul class="project__links">
+      {{- range . }}<li><a class="button" href="{{ partial "url.html" .url }}">{{ .label | default "View project" }}</a></li>{{ end }}
+    </ul>
+    {{- end }}
+
+    {{- with .Params.tags }}
+    <ul class="project__tags" aria-label="Tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+    {{- end }}
+  </article>
+
+  {{- /* Previous / next project, in the same order as the home page. */}}
+  {{ partial "pager.html" (dict "page" . "pages" (where site.RegularPages "Section" "projects").ByWeight "label" "More projects") }}
+</main>
+{{ end }}
