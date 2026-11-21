@@ -1,7 +1,7 @@
 ---
-title: "Gallery image 1"
-image: "images/gallery-1-placeholder.jpg"
-alt: "Describe the image for someone who cannot see it (landscape, 3:2 placeholder)"
+title: Gallery image 1
+image: images/Mondo-2011_03.jpg
+alt: Here it is!  This is it
 weight: 1
 ---
-Write a sentence or two about this image: what it shows, what you made, what you were trying out. This text appears under the image on its own page.
+And a predictable caption.
