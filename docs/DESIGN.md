@@ -1,6 +1,6 @@
 # DrPhill — design and maintenance guide
 
-Version 0.3.0 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.4.0 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -36,16 +36,17 @@ Contents
 | Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
 | GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_DrPhill02`): builds and publishes within a minute or two of a save |
 | Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
+| Gallery on the home page (0.4.0): ticked images in Order; first five when none ticked; "See the full gallery" card; no section without images; menu marks Gallery current on gallery pages | **Tested locally**; GitHub build and the new Pages CMS checkbox pending |
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
 | Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
-| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Gallery (edit and create), Education, Tools, Appearance. **Not yet tested:** Experience (0.3.0), including its project dropdown |
+| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Gallery (edit and create), Education, Tools, Appearance. Experience (21 Nov; the project dropdown saves the chosen project, but is awkward to use: see section 11). **Not yet tested:** the Gallery form's "Show on home page" box (0.4.0) |
 | Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**, and **on GitHub** (21 Nov): section, menu button and related-project link live. **Not yet tested:** the Pages CMS form and its dropdown |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**Next step:** test the Experience form in Pages CMS (including the project dropdown); real phones, Safari and Firefox. Then, discussed 21 Nov:
+**Next step:** decide the Experience dropdown's position and workaround (section 11); test the Gallery checkbox in Pages CMS; real phones, Safari and Firefox. Then, discussed 21 Nov:
 - **Project kinds** (not yet decided): one "Kind" select field in the Projects form choosing both the project's page template and its home-page card (e.g. case study: full-width card and long-form page; project: standard card and page; brief: one line in a compact list). One form holding every field for every kind, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kind's fields). Open: labels, whether a brief links out or to a small page, case-study structure (headings in the body vs. separate fields), any limit on case studies.
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
@@ -167,6 +168,7 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── nav.html                  section menu (row on wide screens, Menu button on narrow)
 │           ├── project-card.html         image + title + caption card
 │           ├── gallery-items.html        gallery entries that have an image, in order
+│           ├── section-gallery.html      home-page Gallery section: chosen thumbnails + "See the full gallery" card
 │           ├── pager.html                previous / next links (project and gallery pages)
 │           ├── section-experience.html, section-education.html, section-tools.html, section-about.html, section-contact.html
 │           ├── experience-entries.html   experience entries that have content, in order
@@ -232,6 +234,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `title` | string, required | Image page title; previous/next link text |
 | `image` | path, required | `images/…`; any shape, up to 2000 px on the long side |
 | `alt` | string | Image description; also the thumbnail link's name |
+| `home` | boolean, default `false` | Show on the home page's Gallery section. If no entry has it, the first five (by Order) are shown |
 | `weight` | number | Order; 1 first |
 | *body* | Markdown | The caption under the image on its own page |
 
@@ -294,14 +297,15 @@ A list of `{name, note}`. Items without a `name` are skipped.
    | 4 or more | One wide, then rows of three; a part-filled last row lines up from the left | `projects__row--3` |
 
    The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px.
-3. **Experience**, **Education**, **Tools**, **About**, **Contact**, each only if it has content.
-4. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
+3. **Gallery** (`section-gallery.html`): the images ticked "Show on home page", in Order, as many as are ticked (the first five if none is ticked), as square thumbnails, then a "See the full gallery →" tile linking to the Gallery page.
+4. **Experience**, **Education**, **Tools**, **About**, **Contact**, each only if it has content.
+5. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
 
-**One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery (a separate page, not a home-page section), Experience, Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
+**One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery, Experience, Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
 
 **Project page** (`projects/single.html`): header (name links home; menu links go to `home#section`), title, year · role, caption, full image (uncropped), description, link buttons, tags, previous/next project in home-page order, bottom block.
 
-**Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery" marked as the current page), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
+**Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
 
 **Gallery image page** (`gallery/single.html`): "← Gallery" link, the whole image (uncropped, at most 80% of the screen's height, centred on a tinted panel), title, caption, previous/next image (`pager.html`, shared with project pages), bottom block.
 
@@ -344,6 +348,9 @@ A fixed one-plus-three layout left gaps for students with fewer projects and hid
 
 **Gallery: one page per image, rather than a pop-up viewer** (0.2.0).
 Each thumbnail links to a plain page with the whole image, a title and a caption. This needs no script, works with the browser's Back button, gives every image its own address to share and its own search-engine entry (`CreativeWork`), and suits captions longer than a line. Thumbnails are square crops in a uniform grid, without visible titles, so the grid reads as a set of images. Set aside: a script-driven lightbox (needs focus trapping, keyboard handling and history management to be accessible, and loses per-image addresses); the `<dialog>` element (accessible, but still needs a script to open); CSS `:target` overlays (no focus management; Back-button behaviour is confusing); a masonry layout keeping each image's shape (CSS masonry is not yet in all browsers).
+
+**Gallery on the home page too, chosen image by image** (0.4.0).
+Until 0.4.0 every menu item scrolled within the home page except Gallery, which opened a separate page. Artists in particular would see their main work moved off the home page. Now the home page has a Gallery section and the menu points to it; the Gallery page remains as the complete set, with captions. Students tick "Show on home page" per image, so an artist can show many and a developer few; ticked images appear in Order, however many. With none ticked, the first five appear, so the section, and the menu's consistency, never depends on a student having ticked anything. A "See the full gallery →" tile always ends the section, because captions live only on the full page. Set aside: one automatic row (artists would get about five images on a laptop); a 1/2/3-rows setting in Appearance (simpler, but less control than artists want); keeping Gallery as a separate page and marking the difference in the menu.
 
 **Hugo makes the image sizes.**
 Students upload originals, often several megabytes from a phone or camera. At build time Hugo makes WebP copies at up to five widths (never larger than the original), turns phone photos upright, and the page tells each browser which to download. Originals are not published (`excludeFiles` in `hugo.toml`). Set aside: asking students to export at the right size (they won't, reliably), and an image CDN (an outside service).
@@ -391,7 +398,7 @@ The theme supplies the technical basics: descriptive `<title>` and description, 
 - Favicon: the student's initials drawn as SVG inside the page. No file to upload, no missing-icon request.
 - Sharing preview: a 1200 × 630 crop of the project image (on the home page, the feature project's).
 - Search data: a schema.org `Person` with the student's links.
-- Education entries have no pages of their own; projects do.
+- Education and Experience entries have no pages of their own; projects and gallery images do.
 - The bottom block repeats contact links, so a visitor who reaches the end can act without scrolling back.
 
 ---
@@ -438,13 +445,13 @@ Also run `python3 -I dev/check_content.py` (configuration and content files pars
 
 Building at a subfolder address matters: it is how GitHub Pages serves student sites, and it catches paths with a leading slash.
 
-**What `dev/check_site.py` checks:** console errors; one `<h1>` and no skipped heading levels; alt text and dimensions on every image; no empty links or duplicate ids; keyboard order; and at phone, tablet and laptop sizes: header height, no sideways scrolling, feature caption above the fold, every menu jump landing just below the header, and the phone menu closing correctly.
+**What `dev/check_site.py` checks:** on the home, All projects and Gallery pages, console errors; one `<h1>` and no skipped heading levels; alt text and dimensions on every image; no empty links (a link named by its image's alt text counts as named) or duplicate ids; keyboard order; and at phone, tablet and laptop sizes: header height, no sideways scrolling, feature caption above the fold, every menu jump landing just below the header, and the phone menu closing correctly.
 
 **Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
 
 **Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; Profile, Projects, Gallery, Education, Tools and Appearance forms; an image uploaded through Pages CMS appears resized on the live site.
 
-**Still to test (in this order):** the Experience form in Pages CMS, including the project dropdown; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
+**Still to test (in this order):** the Gallery form's "Show on home page" box; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
 
 ---
 
@@ -478,7 +485,8 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 ## 11. Known limitations and open questions
 
-- **Partly untested** (section 1): the Experience form in Pages CMS, Safari, Firefox and real phones.
+- **Partly untested** (section 1): the Gallery form's new checkbox, Safari, Firefox and real phones.
+- **The Experience form's project dropdown is awkward** (Pages CMS's own search box). It searches for the text already in it, so with a project chosen, clicking the arrow shows an empty or unopened list; deleting the text brings up every project. It saves correctly. It also sits at the bottom of the form. Options under discussion: move it up; a hint in its description; the multi-select style (chosen projects as removable tags, the search box always empty), possibly allowing two or three related projects; reporting it to Pages CMS.
 - **Pages CMS rewrites files on save** (section 2): comments are deleted, so explanations belong in field descriptions in `.pages.yml`, not in content files.
 - **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
 - **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
@@ -529,6 +537,10 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 21 November 2026 — version 0.3.0:
 1. Experience section and form: role, organization, website, location, dates, order, detail, and a related project chosen from a dropdown of the student's projects (Pages CMS `reference` field). Placed after Projects; menu button and section appear only with content; no pages of its own. Two sample entries.
+
+21 November 2026 — version 0.4.0:
+1. Gallery section on the home page, after Projects: images ticked "Show on home page" (new Gallery form checkbox), in Order, however many; the first five if none is ticked; a "See the full gallery →" tile. The menu's Gallery item now scrolls to this section, so every menu item is a home-page section or an outside link; on gallery pages it is marked as the current place.
+2. `dev/check_site.py` also checks the Gallery page, and counts a link named by its image's alt text as named.
 
 ---
 

@@ -6,7 +6,7 @@
   Returns a slice of dicts, in menu order:
     id       anchor on the home page (#projects) — empty for the others
     label    menu text
-    page     for pages of their own (Gallery)
+    page     for pages of their own (none at present; nav.html still supports it)
     url      for outside links (LinkedIn, GitHub)
 
   Usage: {{ $sections := partialCached "sections.html" . "sections" }}
@@ -19,9 +19,10 @@
   {{- $out = $out | append (dict "id" "projects" "label" "Projects") -}}
 {{- end -}}
 
-{{- /* Gallery: a page of its own, listed when any entry has an image. */ -}}
+{{- /* Gallery: a home-page section (which links on to the full Gallery page), listed
+       when any entry has an image. */ -}}
 {{- with partial "gallery-items.html" . -}}
-  {{- $out = $out | append (dict "id" "" "label" "Gallery" "page" (site.GetPage "/gallery").RelPermalink) -}}
+  {{- $out = $out | append (dict "id" "gallery" "label" "Gallery") -}}
 {{- end -}}
 
 {{- /* Experience: any entry with a role or an organization filled in. */ -}}

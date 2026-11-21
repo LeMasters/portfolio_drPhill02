@@ -12,7 +12,7 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 |---|---|---|
 | **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
 | **Projects** | One entry per project: title, caption, description, order, image, year, role, links, tags | …there are no projects on the page |
-| **Gallery** | One entry per image: title, image, image description, order, caption | …the Gallery page and its menu link disappear |
+| **Gallery** | One entry per image: title, image, image description, whether to show it on the home page, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
@@ -47,7 +47,7 @@ On a phone, rows of three stack into one column; pairs stay side by side.
 
 Upload images through the Projects form. Recommended: **1800 × 1200 px (3:2), under about 400 KB**. The site makes smaller copies for phones automatically, with tidy names: spaces and unusual characters become underscores (`My level 2.png` → `My_level_2-800w.webp`). Your original keeps its name in the repository. The wide feature crops the top and bottom of the image a little (the placeholder images show how much).
 
-Gallery images can be any shape. The Gallery page shows a square crop of each; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
+Gallery images can be any shape. Your home page has a Gallery section: tick **Show on home page** for each image you want there (as many as you like; they appear in Order). If you tick none, the first five appear. The section ends with a link to the full Gallery page, which shows every image as a square crop; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
 
 Always fill in **Image description**: it is read aloud to people who cannot see the image.
 

@@ -3,8 +3,8 @@
   Wide screens: a row of small links. Narrow screens: a "Menu" button that opens the
   same list (a native <details> element: works without JavaScript; the small script
   in baseof.html only closes it after a choice, on Escape, or on a tap elsewhere).
-  On pages other than home, section links lead back to that part of the home page;
-  Gallery links to its own page.
+  On pages other than home, section links lead back to that part of the home page.
+  On the Gallery page and gallery image pages, "Gallery" is marked as the current place.
 */ -}}
 {{- $sections := partialCached "sections.html" . "sections" -}}
 {{- with $sections }}
@@ -17,7 +17,8 @@
   {{- else if .url -}}
     {{- $items = $items | append (printf `<li><a href="%s" rel="me">%s<span aria-hidden="true"> ↗</span></a></li>` (.url | htmlEscape) .label) -}}
   {{- else -}}
-    {{- $items = $items | append (printf `<li><a href="%s#%s">%s</a></li>` $prefix .id .label) -}}
+    {{- $current := cond (and (eq .id "gallery") (eq $.Section "gallery")) ` aria-current="page"` "" -}}
+    {{- $items = $items | append (printf `<li><a href="%s#%s"%s>%s</a></li>` $prefix .id $current .label) -}}
   {{- end -}}
 {{- end -}}
 {{- $list := delimit $items "" | safeHTML -}}

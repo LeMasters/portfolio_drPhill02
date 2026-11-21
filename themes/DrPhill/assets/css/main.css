@@ -30,7 +30,7 @@
      8. Projects ............ index.html, partials/project-card.html
      9. Experience, Education, Tools, About, Contact ... partials/section-*.html
     10. Project page ........ projects/single.html
-    11. Gallery ............. gallery/list.html, gallery/single.html
+    11. Gallery ............. partials/section-gallery.html, gallery/list.html, gallery/single.html
     12. Other pages ......... _default/single.html, _default/list.html, 404.html
     13. Buttons and pager ... partials/pager.html (previous / next)
     14. Bottom block ........ partials/bottom-block.html
@@ -824,9 +824,10 @@ a {
 
 
 
-/* == 11. Gallery (gallery/list.html, gallery/single.html) =================== */
-/* The gallery page: square thumbnails, as many columns as fit (two on a phone).
-   Each opens the image's own page, where it is shown whole with its caption. */
+/* == 11. Gallery (partials/section-gallery.html, gallery/*.html) ============ */
+/* Square thumbnails, as many columns as fit (two on a phone), on the home page's
+   Gallery section and on the Gallery page. Each opens the image's own page, where
+   it is shown whole with its caption. */
 
 .gallery__grid {
   display: grid;
@@ -855,6 +856,30 @@ a {
   .gallery__link:hover img {
     scale: 1.03;
   }
+}
+
+/* On the home page the section title already gives the space above. */
+.gallery__grid--home {
+  margin-block-start: 0;
+}
+
+/* The last tile on the home page: a link to the full Gallery page. */
+.gallery__more {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: var(--space-s);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+  text-align: center;
+  text-decoration: none;
+}
+
+.gallery__more:hover,
+.gallery__more:focus-visible {
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 /* One image's page. */
@@ -1068,6 +1093,7 @@ a {
    and outlines carry the structure. */
 @media (forced-colors: active) {
   .button,
+  .gallery__more,
   .sitenav__menu summary,
   .sitenav__panel {
     border-color: CanvasText;
