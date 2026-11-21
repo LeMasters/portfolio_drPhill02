@@ -46,9 +46,11 @@ Contents
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Section labels (0.5.0): visible Projects label; all labels larger, left-aligned; space at the end of each section | **Tested locally** and **on GitHub** (21 Nov) |
 | Project kinds (0.5.0): case study, project, brief; home-page layout for each mix (no case studies, one, two; case study + one project; two projects + briefs; briefs only); case-study contents list; "Heading 1" in a description becoming `<h2>` | **Tested locally** (21 Nov). Kind field in Pages CMS **not yet tested** |
+| Sections (0.5.0): picture-and-text rows alternating sides on project pages; stacked when narrow; picture-only or text-only rows; headings in the case-study contents list | **Tested locally** (1440 and 390 px) and **on GitHub** (21 Nov). In Pages CMS **not yet tested** (picture upload inside a list item, reordering) |
+| Analytics form (0.5.0): service, code, AI-training choice, Search Console code in `data/analytics.yaml`; Profile without them; About field under Area of expertise | **Tested locally** and **on GitHub** (21 Nov). In Pages CMS **not yet tested** |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**0.5.0 (21 Nov)** adds project kinds and larger section labels. Carried forward: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); the Kind field tested in Pages CMS; real phones, Safari and Firefox; neutral sample content and the student-path rehearsal before the template goes to students. Open: whether to limit the number of case studies (section 11).
+**0.5.0 (21 Nov)** adds project kinds, larger section labels, picture-and-text Sections on project pages, and an eighth form, Analytics (visitor statistics, AI-training choice and Search Console code, moved out of Profile). Carried forward: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); the Kind field, Sections and the Analytics form tested in Pages CMS; real phones, Safari and Firefox; neutral sample content and the student-path rehearsal before the template goes to students. Open: whether to limit the number of case studies (section 11).
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
 
@@ -169,7 +171,8 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── masthead.html             sticky header: name, menu, expertise
 │           ├── name-lines.html           splits the name into two even rows for the header
 │           ├── nav.html                  section menu (row on wide screens, Menu button on narrow)
-│           ├── project-card.html         image + title + caption card ("Case study" label)
+│           ├── project-card.html         image + title + caption card
+│           ├── project-sections.html     a project's Sections: picture and text rows, alternating sides ("Case study" label)
 │           ├── project-kind.html         a project's kind: case-study, project or brief
 │           ├── project-groups.html       projects grouped by kind, in home-page order
 │           ├── gallery-items.html        gallery entries that have an image, in order
@@ -575,6 +578,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 5. Sections in the Projects form: a list of picture-and-text rows that alternate sides (`partials/project-sections.html`, section 10 of `main.css`). Tested locally and built on GitHub; **not yet tested in Pages CMS** (picture upload inside a list item).
 6. Analytics moved out of Profile into its own form and file (`data/analytics.yaml`: `service`, `code`). Tested locally (GoatCounter, unrecognised Cloudflare code, NONE, no file); **not yet tested in Pages CMS**. Sites made before this change must re-enter their analytics choice in the new form.
 7. AI-training choice and Google Search Console code moved from Profile to the Analytics form (`data/analytics.yaml`). Tested locally (opt-out on, off, no file; verification tag present and absent); **not yet tested in Pages CMS**. Sites made before this change must re-enter a Search Console code, and re-tick AI training if they had allowed it; otherwise the opt-out stays on.
+8. Profile form: About field moved up, under Area of expertise. Form order only; content unchanged.
 
 ---
 
