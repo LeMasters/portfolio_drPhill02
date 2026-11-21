@@ -230,7 +230,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
 | `tags` | list of strings | Shown on the project page |
-| `sections` | list of `{heading, image, alt, text}` | After the description on the project page (`partials/project-sections.html`): picture beside text, picture left on the first row and swapping sides on each row; stacked under 40rem of space. Rows with only a picture or only text span the width and don't count toward the alternation. Headings join a case study's contents list. `text` is Markdown. A new project's form starts with seven entries holding only headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection: `list.default` in `.pages.yml`); entries are folded and show their heading (`list.collapsible.summary`). Prose in front matter: less portable than the body (section 6) |
+| `sections` | list of `{heading, image, alt, text}` | After the description on the project page (`partials/project-sections.html`): picture beside text, picture left on the first row and swapping sides on each row, cropped from the centre to the text's height (at least 14 rem); stacked, picture whole, under 40rem of space. Rows with only a picture or only text span the width and don't count toward the alternation. Headings join a case study's contents list. `text` is Markdown. A new project's form starts with seven entries holding only headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection: `list.default` in `.pages.yml`); entries are folded and show their heading (`list.collapsible.summary`). Prose in front matter: less portable than the body (section 6) |
 | *body* | Markdown | The project description. Headings become the case-study contents list (three or more) |
 
 ### `content/gallery/<slug>.md` (Gallery form; one file per image)
@@ -581,6 +581,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 8. Profile form: About field moved up, under Area of expertise. Form order only; content unchanged.
 9. Sections start with seven suggested headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection) and fold to show their heading. Uses `list.default`, which Pages CMS applies (its `lib/schema.ts`, June 2026) but its settings editor flags as an error, since its config checks don't list it; the forms still load. Pages CMS cannot tie a default to Kind, so every new project gets the headings; headings with neither picture nor text are not shown (tested locally). **Not yet tested in Pages CMS.**
 10. Case-study page in one column: description directly under the caption, then the at-a-glance panel and contents list, then the image (previously the panel sat beside the description). Tested locally (1440 and 390 px; `dev/check_site.py` passes).
+11. Sections pictures cropped to their text's height on wide screens (option B of three discussed: length tiers, crop-to-height, balanced estimate): the row is as tall as the text or `--section-image-min` (14 rem), the picture fills it with `object-fit: cover` from the centre; whole, above the text, on narrow screens. Tested locally.
 
 ---
 
