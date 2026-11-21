@@ -72,7 +72,7 @@
 
   /* Type sizes. Fluid sizes mix rem and vw, so they still grow when a reader zooms. */
   --text-xs: 0.8rem;                                    /* menu, tags */
-  --text-label: clamp(1.3rem, 1.1rem + 0.8vw, 1.85rem); /* section labels: about 1.6–2.3 × the menu */
+  --text-label: clamp(1.2rem, 1.05rem + 0.65vw, 1.65rem); /* section labels: about 1.5–2 × the menu */
   --text-sm: 0.92rem;                                   /* captions, notes */
   --text-base: 1.0625rem;                               /* body text */
   --text-md: 1.15rem;                                   /* entry titles, contact links */
@@ -248,8 +248,7 @@ a {
   scroll-margin-block-start: calc(var(--space-s) - var(--space-xl));
 }
 
-/* Section labels (Projects, Gallery, Experience…): right-aligned under the rule,
-   echoing the right-aligned menu that leads to them. */
+/* Section labels (Projects, Gallery, Experience…), under a rule. */
 .section__title {
   margin: 0 0 var(--space-m);
   padding-block-start: var(--space-xs);
@@ -258,7 +257,6 @@ a {
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
   letter-spacing: 0.06em;
-  text-align: end;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
