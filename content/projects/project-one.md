@@ -2,8 +2,8 @@
 title: Project One (your strongest work)
 caption: "One line: what it is and what you did, e.g. Puzzle game · Unity · solo"
 weight: 1
-image: images/texturedMosaic_portfolio_test.png
-alt: Describe the image for someone who cannot see it
+image: images/texturedMosaic_portfolio_test-1.png
+alt: textured mosaic, it is, it is.
 year: "2026"
 role: Your role, e.g. Designer and programmer
 links:
@@ -11,7 +11,7 @@ links:
     url: https://example.itch.io/project-one
 tags:
   - tag one
-  - tag two
+  - tagus secondus
 ---
 This is the project's own page. The project with the lowest **weight** number appears as the wide feature at the top of your home page; the next three appear in the row beneath it.
 
