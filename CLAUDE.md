@@ -17,7 +17,7 @@ You are helping Garrison LeMasters (ETBD, Miami University) maintain DrPhill, a 
 
 ## The rules this theme follows
 
-- **Most robust, most contemporary HTML/CSS; no libraries.** Plain CSS, no framework. JavaScript only for small enhancements the page works without. No requests to other sites (no Google Fonts, CDNs, analytics) — except the visitor-statistics script a student explicitly chooses in Profile (`partials/analytics.html`, off by default).
+- **Most robust, most contemporary HTML/CSS; no libraries.** Plain CSS, no framework. JavaScript only for small enhancements the page works without. No requests to other sites (no Google Fonts, CDNs, analytics) — except the visitor-statistics script a student explicitly chooses in the Analytics form (`partials/analytics.html`, off by default).
 - **Content is portable Markdown/YAML** in `content/` and `data/`, in the format in DESIGN.md section 4. Never move content into templates, and never put presentation into content files (`data/style.yaml` is the one place for appearance).
 - **Every key in a file Pages CMS edits has a field in `.pages.yml`** (hidden if need be), or a save will drop it.
 - **Paths without a leading slash**; every student-typed link through `partials/url.html`; every image through `partials/img.html`.

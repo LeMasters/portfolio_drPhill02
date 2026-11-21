@@ -128,7 +128,7 @@ DrPhill/                                  ← one repository per student (copied
 ├── README.md                             student-facing: how to edit, where content lives
 ├── CLAUDE.md                             instructions for Claude when maintaining the theme
 ├── hugo.toml                             site settings, image mounts, experience/education cascade
-├── .pages.yml                            the seven Pages CMS forms
+├── .pages.yml                            the eight Pages CMS forms
 ├── .github/workflows/hugo.yml            build + deploy on every push (Hugo pinned)
 ├── .gitignore
 │
@@ -140,7 +140,8 @@ DrPhill/                                  ← one repository per student (copied
 │   └── education/*.md                    one per degree; body = optional detail; no pages of their own
 ├── data/
 │   ├── tools.yaml                        list of {name, note}
-│   └── style.yaml                        {palette, text, titles}: colour scheme and typefaces (appearance, not content)
+│   ├── style.yaml                        {palette, text, titles}: colour scheme and typefaces (appearance, not content)
+│   └── analytics.yaml                    {service, code}: visitor statistics (a setting, not content)
 ├── static/
 │   ├── images/                           uploads (originals; only resized copies are published)
 │   └── files/                            résumé etc.
@@ -178,7 +179,7 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── experience-entries.html   experience entries that have content, in order
 │           ├── education-entries.html    education entries that have content, in order
 │           ├── bottom-block.html         closing block: name, expertise, contact links
-│           ├── analytics.html            optional GoatCounter or Cloudflare script (Profile choice)
+│           ├── analytics.html            optional GoatCounter or Cloudflare script (Analytics form)
 │           ├── img.html                  ★ every image: WebP srcset, sizes, width/height, lazy
 │           ├── img-name.html             readable names for published image copies
 │           └── url.html                  ★ every link: adds https://, fixes subfolder paths
@@ -213,8 +214,6 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `resume` | file path | `files/…pdf`; Contact section button |
 | `aiTraining` | boolean, default `false` | `false` adds the AI-training opt-out (page tags and robots.txt); `true` removes it |
 | `googleVerification` | string | Google Search Console HTML-tag verification code; empty = no tag |
-| `analytics` | `none`, `goatcounter` or `cloudflare` | Visitor statistics service; default `none` |
-| `analyticsCode` | string | GoatCounter code (or its address), or Cloudflare token (or the whole snippet); the template picks the code out |
 | *body* | Markdown | The About section; empty = no About section |
 
 ### `content/projects/<slug>.md` (Projects form; one file per project)
@@ -230,6 +229,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
 | `tags` | list of strings | Shown on the project page |
+| `sections` | list of `{heading, image, alt, text}` | After the description on the project page (`partials/project-sections.html`): picture beside text, picture left on the first row and swapping sides on each row; stacked under 40rem of space. Rows with only a picture or only text span the width and don't count toward the alternation. Headings join a case study's contents list. `text` is Markdown. Prose in front matter: less portable than the body (section 6) |
 | *body* | Markdown | The project description. Headings become the case-study contents list (three or more) |
 
 ### `content/gallery/<slug>.md` (Gallery form; one file per image)
@@ -275,6 +275,10 @@ Entries with neither `degree` nor `school` are skipped. Education entries are no
 ### `data/tools.yaml` (Tools form)
 
 A list of `{name, note}`. Items without a `name` are skipped.
+
+### `data/analytics.yaml` (Analytics form; 0.5.0, previously in Profile)
+
+`service`: `none`, `goatcounter` or `cloudflare` (default `none`; a missing file means none). `code`: GoatCounter code (or its address), or Cloudflare token (or the whole snippet); the template picks the code out.
 
 ### `data/style.yaml` (Appearance form)
 
@@ -407,7 +411,7 @@ Students' work is theirs (Miami's policy recognises student ownership), and most
 Set aside: blocking all AI crawlers including search ones (costs visibility), and a site-wide `.well-known/tdmrep.json` (root-only, like `robots.txt`).
 
 **Visitor statistics: a choice of two cookieless services, off by default** (0.2.0).
-A dropdown in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and one code field; `analytics.html` writes the service's script at the end of the page. Both set no cookies and collect no personal data, so no consent banner is needed, which keeps the site consistent with its AI-training opt-out. GoatCounter: the simplest sign-up (the student chooses a code), free for personal sites, but run by one person on donations. Cloudflare: backed by a large company, adds page-speed figures, but sign-up and copying a snippet take more steps. Students may paste a whole address or snippet; the template picks out the code, and anything unrecognised adds nothing and logs a build warning (shown in the GitHub Actions tab). Nothing is added during local previews (`hugo server` runs in the development environment). Numbers are private to the student; no count appears on the page. Set aside: Google Analytics (uses cookies; consent issues for visitors in the EU), Umami Cloud (free-plan limits vary), a public on-page counter (low numbers can work against a student), and the department-hosted counter drafted for colophon.org (requires running a server).
+A dropdown (NONE, GoatCounter, Cloudflare Web Analytics) and one code field, in their own Analytics form since 0.5.0 (a setting, not content, so stored in `data/analytics.yaml`); `analytics.html` writes the service's script at the end of the page. Both set no cookies and collect no personal data, so no consent banner is needed, which keeps the site consistent with its AI-training opt-out. GoatCounter: the simplest sign-up (the student chooses a code), free for personal sites, but run by one person on donations. Cloudflare: backed by a large company, adds page-speed figures, but sign-up and copying a snippet take more steps. Students may paste a whole address or snippet; the template picks out the code, and anything unrecognised adds nothing and logs a build warning (shown in the GitHub Actions tab). Nothing is added during local previews (`hugo server` runs in the development environment). Numbers are private to the student; no count appears on the page. Set aside: Google Analytics (uses cookies; consent issues for visitors in the EU), Umami Cloud (free-plan limits vary), a public on-page counter (low numbers can work against a student), and the department-hosted counter drafted for colophon.org (requires running a server).
 
 **SEO: what the theme does, what students do.**
 The theme supplies the technical basics: descriptive `<title>` and description, canonical address, sharing previews, a sitemap (listed in `robots.txt`), structured data (a schema.org `Person` on the home page, a `CreativeWork` with creator, image, year and keywords on each project page), fast pages, real headings, alt text, and an optional Google Search Console verification field. The rest is content and links, which only students can provide; the README says so in four sentences. The unlinked All projects page is kept out of the sitemap.
@@ -570,6 +574,8 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 2. Project kinds: a Kind field (`projectKind`: case study, project, brief) in the Projects form. Case studies: wide cards first, marked "Case study"; a long page with an at-a-glance panel and a contents list. Briefs: one-line list at the end of the Projects section; a short page. Previous/next links, the All projects page and the sharing image follow the same order. Sample case study and two sample briefs added.
 3. Headings typed as "Heading 1" in a description become `<h2>` (`render-heading.html`); headings in descriptions styled.
 4. `dev/check_site.py` also checks one project page of each kind.
+5. Sections in the Projects form: a list of picture-and-text rows that alternate sides (`partials/project-sections.html`, section 10 of `main.css`). Tested locally and built on GitHub; **not yet tested in Pages CMS** (picture upload inside a list item).
+6. Analytics moved out of Profile into its own form and file (`data/analytics.yaml`: `service`, `code`). Tested locally (GoatCounter, unrecognised Cloudflare code, NONE, no file); **not yet tested in Pages CMS**. Sites made before this change must re-enter their analytics choice in the new form.
 
 ---
 

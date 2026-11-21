@@ -1,17 +1,17 @@
 {{- /*
-  Optional visitor statistics, chosen in the Profile form:
-    analytics:      none | goatcounter | cloudflare
-    analyticsCode:  GoatCounter: the code chosen at sign-up ("janedoe"), or its address
-                    Cloudflare:  the site token, or the whole snippet copied from Cloudflare
+  Optional visitor statistics, chosen in the Analytics form (data/analytics.yaml):
+    service:  none | goatcounter | cloudflare
+    code:     GoatCounter: the code chosen at sign-up ("janedoe"), or its address
+              Cloudflare:  the site token, or the whole snippet copied from Cloudflare
   Students may paste a whole address or snippet; the code is picked out of it.
   Nothing is added when the choice is "none", the code is missing or unrecognised
   (the build log then shows a warning), or the site is being previewed locally
   (hugo server), so a student's own previews are not counted.
   Both services set no cookies.
 */ -}}
-{{- $p := site.Home.Params -}}
-{{- $service := lower (string ($p.analytics | default "none")) -}}
-{{- $raw := trim (string ($p.analyticsCode | default "")) " \n\t" -}}
+{{- $a := site.Data.analytics | default dict -}}
+{{- $service := lower (string ($a.service | default "none")) -}}
+{{- $raw := trim (string ($a.code | default "")) " \n\t" -}}
 {{- if and hugo.IsProduction (ne $service "none") -}}
   {{- if eq $service "goatcounter" -}}
     {{- $code := "" -}}

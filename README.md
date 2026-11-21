@@ -6,17 +6,18 @@ You never need to install anything or touch code. Everything you write is kept i
 
 ## Editing your site
 
-Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and use the seven forms:
+Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and use the eight forms:
 
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
-| **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
-| **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, order, image, year, role, links, tags | …there are no projects on the page |
+| **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and two settings: AI training (off unless you turn it on) and an optional Google Search Console code | …the About section, Contact section, LinkedIn button or GitHub button disappears |
+| **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, sections (a picture beside text, swapping sides on each row), order, image, year, role, links, tags | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, whether to show it on the home page, image description, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
 | **Appearance** | Colour scheme (Ink or Dusk), typeface for text, typeface for titles | (defaults are used: Ink, Atkinson, Fraunces) |
+| **Analytics** | Visitor statistics: a service (GoatCounter or Cloudflare) and its code | (no visitor statistics) |
 
 Each save publishes the site again within a minute or two. The menu at the top lists only the sections that have something in them.
 
@@ -85,7 +86,7 @@ Your site can count its visitors using one of two free services. Neither uses co
 
 1. Go to [goatcounter.com](https://www.goatcounter.com) and choose **Sign up**.
 2. Pick a **code**: a short name such as `janedoe`. Your dashboard will be at `janedoe.goatcounter.com`. Add your email and a password.
-3. In Pages CMS, open **Profile**. Set **Analytics** to **GoatCounter** and type your code (just `janedoe`) in **Analytics code**. Save.
+3. In Pages CMS, open **Analytics**. Set **Service** to **GoatCounter** and type your code (just `janedoe`) in **Code**. Save.
 
 **Cloudflare Web Analytics**: run by a large company; also shows how fast your pages load.
 
@@ -93,7 +94,7 @@ Your site can count its visitors using one of two free services. Neither uses co
 2. In the Cloudflare dashboard, open **Web Analytics** and choose **Add a site**.
 3. For the hostname, type your site's address without `https://` or any folder: `your-username.github.io` (or your own domain). Choose **Done**.
 4. Cloudflare shows a short piece of code (a "JS snippet"). Copy all of it.
-5. In Pages CMS, open **Profile**. Set **Analytics** to **Cloudflare Web Analytics** and paste the snippet into **Analytics code**. Save.
+5. In Pages CMS, open **Analytics**. Set **Service** to **Cloudflare Web Analytics** and paste the snippet into **Code**. Save.
 
 **Then check it works.** Wait for the site to publish (a minute or two), visit it from your phone, and look at your dashboard; your visit should appear within a few minutes. If nothing appears:
 
@@ -101,7 +102,7 @@ Your site can count its visitors using one of two free services. Neither uses co
 - Check the code you pasted. If the site can't recognise it, it leaves analytics out rather than breaking. The GitHub **Actions** tab then shows a yellow warning on that build starting "Analytics:".
 - Visits are not counted while you preview your site on your own computer.
 
-**To stop counting**, set **Analytics** back to **NONE**.
+**To stop counting**, set **Service** back to **NONE** in the **Analytics** form.
 
 ### Your web address
 
