@@ -60,5 +60,9 @@ sections:
       est laborum.
 
       ```
+image: images/Mondo-2011_03-1.jpg
+alt: image description goes here
+year: "2022"
+role: Consummate perfectionist
 ---
 Produced for a wealthy, mysterious client who insisted on meeting only at an abandoned mall on the outside of town.  Weird.
