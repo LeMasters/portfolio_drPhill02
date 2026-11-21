@@ -10,14 +10,14 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
-| **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and two settings: AI training (off unless you turn it on) and an optional Google Search Console code | …the About section, Contact section, LinkedIn button or GitHub button disappears |
+| **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph | …the About section, Contact section, LinkedIn button or GitHub button disappears |
 | **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, sections (a picture beside text, swapping sides on each row), order, image, year, role, links, tags | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, whether to show it on the home page, image description, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
 | **Appearance** | Colour scheme (Ink or Dusk), typeface for text, typeface for titles | (defaults are used: Ink, Atkinson, Fraunces) |
-| **Analytics** | Visitor statistics: a service (GoatCounter or Cloudflare) and its code | (no visitor statistics) |
+| **Analytics** | Visitor statistics (a service, GoatCounter or Cloudflare, and its code); whether AI companies may train on your site (off unless you turn it on); an optional Google Search Console code | (no visitor statistics; AI training stays refused) |
 
 Each save publishes the site again within a minute or two. The menu at the top lists only the sections that have something in them.
 
@@ -72,11 +72,11 @@ Type full addresses (`https://…`). If you forget the `https://`, the site adds
 
 ### AI training and search
 
-By default your site asks AI companies not to use it to train their models. It does this in every page (a TDM-reservation tag, the opt-out recognised under EU copyright law, plus informal "noai" tags) and in a `robots.txt` file listing the main AI-training crawlers. Search engines, including AI search tools that link back to you, are still welcome. To allow AI training instead, switch on **Allow AI companies to train on this site** in Profile.
+By default your site asks AI companies not to use it to train their models. It does this in every page (a TDM-reservation tag, the opt-out recognised under EU copyright law, plus informal "noai" tags) and in a `robots.txt` file listing the main AI-training crawlers. Search engines, including AI search tools that link back to you, are still welcome. To allow AI training instead, switch on **Allow AI companies to train on this site** in the **Analytics** form.
 
 These are requests: reputable companies honour them, but nothing technical can force a crawler to comply. A `robots.txt` file only works when the site is at the top of its web address (`your-username.github.io` or your own domain), not in a subfolder; the page tags work everywhere.
 
-To help people find you in search: write a clear area of expertise and project captions, describe every image, link to your portfolio from LinkedIn, itch.io and anywhere else you are, and (optionally) add your site to Google Search Console and paste its verification code into Profile.
+To help people find you in search: write a clear area of expertise and project captions, describe every image, link to your portfolio from LinkedIn, itch.io and anywhere else you are, and (optionally) add your site to Google Search Console and paste its verification code into the **Analytics** form.
 
 ### Visitor statistics (optional)
 

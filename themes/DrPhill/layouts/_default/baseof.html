@@ -29,18 +29,20 @@
   {{- end }}
   <link rel="canonical" href="{{ .Permalink }}">
 
-  {{- /* AI training opt-out (Profile → "Allow AI training", off by default).
+  {{- /* AI training opt-out (Analytics form → "Allow AI training", off by default;
+         stored in data/analytics.yaml with the Search Console code).
          These tags travel with every page, so they work even where robots.txt
          cannot be read (sites in a subfolder, such as username.github.io/repo/).
          - tdm-reservation: W3C TDM Reservation Protocol; reserves text-and-data-
            mining rights (the opt-out recognised by EU copyright law, Art. 4 CDSM).
          - robots noai, noimageai: informal tags some AI crawlers and dataset
            builders honour. Ignored by search engines; search is unaffected. */}}
-  {{- if not $home.Params.aiTraining }}
+  {{- $set := site.Data.analytics | default dict -}}
+  {{- if not $set.aiTraining }}
   <meta name="tdm-reservation" content="1">
   <meta name="robots" content="noai, noimageai">
   {{- end }}
-  {{- with $home.Params.googleVerification }}
+  {{- with $set.googleVerification }}
   <meta name="google-site-verification" content="{{ . }}">
   {{- end }}
 

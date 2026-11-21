@@ -141,7 +141,7 @@ DrPhill/                                  ← one repository per student (copied
 ├── data/
 │   ├── tools.yaml                        list of {name, note}
 │   ├── style.yaml                        {palette, text, titles}: colour scheme and typefaces (appearance, not content)
-│   └── analytics.yaml                    {service, code}: visitor statistics (a setting, not content)
+│   └── analytics.yaml                    {service, code, aiTraining, googleVerification}: settings, not content
 ├── static/
 │   ├── images/                           uploads (originals; only resized copies are published)
 │   └── files/                            résumé etc.
@@ -212,8 +212,6 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `github` | string (URL) | Menu button (opens GitHub), bottom block, structured data; empty = no button |
 | `links` | list of `{label, url}` | Other sites; Contact section and bottom block |
 | `resume` | file path | `files/…pdf`; Contact section button |
-| `aiTraining` | boolean, default `false` | `false` adds the AI-training opt-out (page tags and robots.txt); `true` removes it |
-| `googleVerification` | string | Google Search Console HTML-tag verification code; empty = no tag |
 | *body* | Markdown | The About section; empty = no About section |
 
 ### `content/projects/<slug>.md` (Projects form; one file per project)
@@ -276,9 +274,9 @@ Entries with neither `degree` nor `school` are skipped. Education entries are no
 
 A list of `{name, note}`. Items without a `name` are skipped.
 
-### `data/analytics.yaml` (Analytics form; 0.5.0, previously in Profile)
+### `data/analytics.yaml` (Analytics form; 0.5.0)
 
-`service`: `none`, `goatcounter` or `cloudflare` (default `none`; a missing file means none). `code`: GoatCounter code (or its address), or Cloudflare token (or the whole snippet); the template picks the code out.
+`service`: `none`, `goatcounter` or `cloudflare` (default `none`; a missing file means none). `code`: GoatCounter code (or its address), or Cloudflare token (or the whole snippet); the template picks the code out. `aiTraining`: boolean, default `false`; `false` (or a missing file) adds the AI-training opt-out (page tags and robots.txt), `true` removes it. `googleVerification`: Google Search Console HTML-tag verification code; empty = no tag. The last two were in Profile until 0.5.0.
 
 ### `data/style.yaml` (Appearance form)
 
@@ -576,6 +574,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 4. `dev/check_site.py` also checks one project page of each kind.
 5. Sections in the Projects form: a list of picture-and-text rows that alternate sides (`partials/project-sections.html`, section 10 of `main.css`). Tested locally and built on GitHub; **not yet tested in Pages CMS** (picture upload inside a list item).
 6. Analytics moved out of Profile into its own form and file (`data/analytics.yaml`: `service`, `code`). Tested locally (GoatCounter, unrecognised Cloudflare code, NONE, no file); **not yet tested in Pages CMS**. Sites made before this change must re-enter their analytics choice in the new form.
+7. AI-training choice and Google Search Console code moved from Profile to the Analytics form (`data/analytics.yaml`). Tested locally (opt-out on, off, no file; verification tag present and absent); **not yet tested in Pages CMS**. Sites made before this change must re-enter a Search Console code, and re-tick AI training if they had allowed it; otherwise the opt-out stays on.
 
 ---
 
