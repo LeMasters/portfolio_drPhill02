@@ -31,6 +31,7 @@ sections:
   - heading: Outcome
   - heading: Reflection
     image: images/number-7-1.jpg
+    alt: Just an image of the number 7 I suppose
     text: >-
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
