@@ -6,7 +6,8 @@
 #                                        AI-training choice, Search Console code, analytics;
 #                                        body = About
 #   Projects    content/projects/*.md    one file per project; body = description
-#   Gallery     content/gallery/*.md     one file per image; body = caption
+#   Gallery     content/gallery/*.md     one file per image; body = caption;
+#                                        home = show on the home page
 #   Experience  content/experience/*.md  one file per job; body = optional detail;
 #                                        project = dropdown of the student's projects
 #   Education   content/education/*.md   one file per degree; body = optional detail

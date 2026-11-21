@@ -21,7 +21,7 @@ You are helping Garrison LeMasters (ETBD, Miami University) maintain DrPhill, a 
 - **Content is portable Markdown/YAML** in `content/` and `data/`, in the format in DESIGN.md section 4. Never move content into templates, and never put presentation into content files (`data/style.yaml` is the one place for appearance).
 - **Every key in a file Pages CMS edits has a field in `.pages.yml`** (hidden if need be), or a save will drop it.
 - **Paths without a leading slash**; every student-typed link through `partials/url.html`; every image through `partials/img.html`.
-- **Sections appear only with content**, decided in one place: `partials/sections.html`. Page and menu both read it. Gallery is listed there too, as a separate page (`page` key) rather than a home-page section.
+- **Sections appear only with content**, decided in one place: `partials/sections.html`. Page and menu both read it. Every section, Gallery included, is a home-page section; the Gallery section links on to the full Gallery page.
 - **Previous/next links** on project and gallery pages come from `partials/pager.html`; gallery entries that count are listed by `partials/gallery-items.html` (those with an image).
 - **CSS**: every design value is a custom property in section 1 of `main.css`; class names follow the template file (BEM: `.block__element--variant`); logical properties; mobile first; container queries for component layout; each newer feature either ignored safely or preceded by a fallback with a `Fallback:` comment. Keep the numbered table of contents in sync.
 - **Accessibility**: one `<h1>` per page, no skipped heading levels, alt text, visible focus, contrast ≥ 4.5:1, reduced motion respected.

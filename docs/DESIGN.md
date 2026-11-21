@@ -36,17 +36,17 @@ Contents
 | Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
 | GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_DrPhill02`): builds and publishes within a minute or two of a save |
 | Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
-| Gallery on the home page (0.4.0): ticked images in Order; first five when none ticked; "See the full gallery" card; no section without images; menu marks Gallery current on gallery pages | **Tested locally**; GitHub build and the new Pages CMS checkbox pending |
+| Gallery on the home page (0.4.0): ticked images in Order; first five when none ticked; "See the full gallery" card; no section without images; menu marks Gallery current on gallery pages | **Tested locally**, **on GitHub** and **in Pages CMS** (21 Nov): ticking and unticking images changes the section as described |
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
 | Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
-| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Gallery (edit and create), Education, Tools, Appearance. Experience (21 Nov; the project dropdown saves the chosen project, but is awkward to use: see section 11). **Not yet tested:** the Gallery form's "Show on home page" box (0.4.0) |
-| Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**, and **on GitHub** (21 Nov): section, menu button and related-project link live. **Not yet tested:** the Pages CMS form and its dropdown |
+| Pages CMS forms | **Tested in Pages CMS** (21 Nov): all seven. Profile, Projects (edit and create), Gallery (edit, create, "Show on home page"), Experience, Education, Tools, Appearance. The Experience form's project dropdown saves correctly but is awkward to use (section 11) |
+| Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**, **on GitHub** and **in Pages CMS** (21 Nov) |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**Next step:** decide the Experience dropdown's position and workaround (section 11); test the Gallery checkbox in Pages CMS; real phones, Safari and Firefox. Then, discussed 21 Nov:
+**0.4.0 closes this series of changes (21 Nov).** Carried forward to the next series: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); project kinds (below); real phones, Safari and Firefox; neutral sample content and the student-path rehearsal before the template goes to students. Discussed 21 Nov:
 - **Project kinds** (not yet decided): one "Kind" select field in the Projects form choosing both the project's page template and its home-page card (e.g. case study: full-width card and long-form page; project: standard card and page; brief: one line in a compact list). One form holding every field for every kind, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kind's fields). Open: labels, whether a brief links out or to a small page, case-study structure (headings in the body vs. separate fields), any limit on case studies.
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
@@ -449,9 +449,9 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 **Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
 
-**Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; Profile, Projects, Gallery, Education, Tools and Appearance forms; an image uploaded through Pages CMS appears resized on the live site.
+**Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; all seven Pages CMS forms, including the Experience project dropdown and the Gallery "Show on home page" box; an image uploaded through Pages CMS appears resized on the live site.
 
-**Still to test (in this order):** the Gallery form's "Show on home page" box; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
+**Still to test (in this order):** Safari on iPhone and Mac; Firefox; a real Android phone; analytics with a real account. Then replace the test content with neutral sample content and rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
 
 ---
 
@@ -485,7 +485,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 ## 11. Known limitations and open questions
 
-- **Partly untested** (section 1): the Gallery form's new checkbox, Safari, Firefox and real phones.
+- **Partly untested** (section 1): Safari, Firefox, real phones, and analytics with real accounts.
 - **The Experience form's project dropdown is awkward** (Pages CMS's own search box). It searches for the text already in it, so with a project chosen, clicking the arrow shows an empty or unopened list; deleting the text brings up every project. It saves correctly. It also sits at the bottom of the form. Options under discussion: move it up; a hint in its description; the multi-select style (chosen projects as removable tags, the search box always empty), possibly allowing two or three related projects; reporting it to Pages CMS.
 - **Pages CMS rewrites files on save** (section 2): comments are deleted, so explanations belong in field descriptions in `.pages.yml`, not in content files.
 - **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
@@ -541,6 +541,8 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 21 November 2026 — version 0.4.0:
 1. Gallery section on the home page, after Projects: images ticked "Show on home page" (new Gallery form checkbox), in Order, however many; the first five if none is ticked; a "See the full gallery →" tile. The menu's Gallery item now scrolls to this section, so every menu item is a home-page section or an outside link; on gallery pages it is marked as the current place.
 2. `dev/check_site.py` also checks the Gallery page, and counts a link named by its image's alt text as named.
+3. Gallery form: "Show on home page" placed directly under the image.
+4. Closing version of this series. Tested on GitHub and in all seven Pages CMS forms. Snapshot: `DrPhill-0.4.0.zip` (template with sample content).
 
 ---
 
