@@ -320,7 +320,7 @@ A list of `{name, note}`. Items without a `name` are skipped.
 
 **Project page** (`projects/single.html`), by kind. All three: header (name links home; menu links go to `home#section`), previous/next project in home-page order (case studies, projects, briefs), bottom block.
 - **Project**: title, year · role, caption, full image (uncropped), description, link buttons, tags.
-- **Case study**: "Case study" label, title, caption, full image; then an at-a-glance panel (role, year, tags, link buttons, and a numbered contents list when the description has three or more second-level headings) beside the description, which is set slightly larger. Wide screens (56 rem and up): the panel in a 13 rem column at the left, staying in view below the sticky header; narrow screens: the panel above the description.
+- **Case study** (one reading column, 40 rem, since 0.5.0): "Case study" label, title, caption; the description, set slightly larger, directly under the caption; then the at-a-glance panel (role, year and tags in a row, link buttons, and a numbered contents list when the description's second-level headings and the Sections' headings number three or more); then the full image, if any; then the Sections. Until 0.5.0 the panel sat in a 13 rem column at the left of the description, sticky on wide screens; changed at Garrison's request so the description follows the caption.
 - **Brief**: as a project, in a narrower left-aligned column (44 rem) with a smaller title and image.
 
 **Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
@@ -580,6 +580,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 7. AI-training choice and Google Search Console code moved from Profile to the Analytics form (`data/analytics.yaml`). Tested locally (opt-out on, off, no file; verification tag present and absent); **not yet tested in Pages CMS**. Sites made before this change must re-enter a Search Console code, and re-tick AI training if they had allowed it; otherwise the opt-out stays on.
 8. Profile form: About field moved up, under Area of expertise. Form order only; content unchanged.
 9. Sections start with seven suggested headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection) and fold to show their heading. Uses `list.default`, which Pages CMS applies (its `lib/schema.ts`, June 2026) but its settings editor flags as an error, since its config checks don't list it; the forms still load. Pages CMS cannot tie a default to Kind, so every new project gets the headings; headings with neither picture nor text are not shown (tested locally). **Not yet tested in Pages CMS.**
+10. Case-study page in one column: description directly under the caption, then the at-a-glance panel and contents list, then the image (previously the panel sat beside the description). Tested locally (1440 and 390 px; `dev/check_site.py` passes).
 
 ---
 

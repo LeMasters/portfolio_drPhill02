@@ -2,10 +2,10 @@
 {{- /*
   A project's page. The Kind field (partials/project-kind.html) chooses the layout:
     project     title, year · role, caption, image, description, link buttons, tags
-    case-study  a long read: "Case study" label, title, caption, image; then an
-                at-a-glance panel (year, role, tags, links, and a contents list when
-                the description has three or more headings) beside the description
-                on wide screens, above it on narrow ones
+    case-study  a long read, in one column: "Case study" label, title, caption, the
+                description, then an at-a-glance panel (role, year, tags, links, and
+                a contents list when the description and sections have three or more
+                headings), then the image
     brief       the project layout in a narrower column with a smaller title and image
   Every kind then shows its Sections, if any (partials/project-sections.html):
   picture and text side by side, swapping sides on each row.
@@ -30,10 +30,12 @@
       {{- with .Params.caption }}<p class="project__caption">{{ . }}</p>{{ end }}
     </header>
 
+    {{- if ne $kind "case-study" }}
     {{- with .Params.image }}
     <figure class="project__image">
       {{ partial "img.html" (dict "src" . "alt" ($.Params.alt | default "") "eager" true "sizes" $sizes) }}
     </figure>
+    {{- end }}
     {{- end }}
 
     {{- if eq $kind "case-study" }}
@@ -47,12 +49,15 @@
       {{- if and .heading (or .image .text) }}{{ $toc = $toc | append (dict "id" (printf "section-%s" (anchorize .heading)) "text" .heading) }}{{ end -}}
     {{- end -}}
     <div class="study">
+      {{- with .Content }}<div class="project__body study__body">{{ . }}</div>{{ end }}
       <aside class="study__glance" aria-label="At a glance">
+        {{- if or .Params.role .Params.year .Params.tags }}
         <dl class="study__facts">
           {{- with .Params.role }}<div><dt>Role</dt><dd>{{ . }}</dd></div>{{ end }}
           {{- with .Params.year }}<div><dt>Year</dt><dd>{{ . }}</dd></div>{{ end }}
           {{- with .Params.tags }}<div><dt>Tags</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
         </dl>
+        {{- end }}
         {{- with $links }}
         <ul class="project__links">
           {{- range . }}<li><a class="button" href="{{ partial "url.html" .url }}">{{ .label | default "View project" }}</a></li>{{ end }}
@@ -67,8 +72,12 @@
         </nav>
         {{- end }}
       </aside>
-      {{- with .Content }}<div class="project__body study__body">{{ . }}</div>{{ end }}
     </div>
+    {{- with .Params.image }}
+    <figure class="project__image">
+      {{ partial "img.html" (dict "src" . "alt" ($.Params.alt | default "") "sizes" $sizes) }}
+    </figure>
+    {{- end }}
 
     {{- else }}
     {{- with .Content }}<div class="project__body">{{ . }}</div>{{ end }}
