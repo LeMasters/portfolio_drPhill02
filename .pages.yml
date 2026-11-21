@@ -65,7 +65,7 @@ content:
         type: string
         description: e.g. https://github.com/yourname. Leave empty to hide the GitHub button.
       - name: links
-        label: Links
+        label: Custom Links
         type: object
         list: true
         description: Your other sites, e.g. itch.io, ArtStation, Behance. Full addresses are best. Shown under Contact.
