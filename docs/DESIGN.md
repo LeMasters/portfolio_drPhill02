@@ -420,7 +420,9 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 **Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
 
-**Still to test (in this order):** first GitHub build; each Pages CMS form opens and saves; an image uploaded through Pages CMS appears resized on the live site; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
+**Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; Profile, Projects, Tools and Appearance forms; an image uploaded through Pages CMS appears resized on the live site.
+
+**Still to test (in this order):** Gallery and Education forms in Pages CMS; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
 
 ---
 
@@ -454,7 +456,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 ## 11. Known limitations and open questions
 
-- **Untested on GitHub and in Pages CMS** (section 1).
+- **Partly untested** (section 1): the Gallery and Education forms in Pages CMS, Safari, Firefox and real phones.
 - **Pages CMS rewrites files on save** (section 2): comments are deleted, so explanations belong in field descriptions in `.pages.yml`, not in content files.
 - **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
 - **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
