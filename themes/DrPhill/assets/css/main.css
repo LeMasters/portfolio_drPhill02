@@ -72,7 +72,7 @@
 
   /* Type sizes. Fluid sizes mix rem and vw, so they still grow when a reader zooms. */
   --text-xs: 0.8rem;                                    /* menu, tags */
-  --text-label: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);  /* section labels: 2–3 × the menu */
+  --text-label: clamp(1.3rem, 1.1rem + 0.8vw, 1.85rem); /* section labels: about 1.6–2.3 × the menu */
   --text-sm: 0.92rem;                                   /* captions, notes */
   --text-base: 1.0625rem;                               /* body text */
   --text-md: 1.15rem;                                   /* entry titles, contact links */
@@ -244,6 +244,7 @@ a {
 .section {
   padding-block-start: var(--space-xl);
   /* Menu jumps land with the heading just below the sticky header. */
+  padding-block-end: var(--space-l);  /* breathing room before the next section's rule */
   scroll-margin-block-start: calc(var(--space-s) - var(--space-xl));
 }
 
@@ -507,7 +508,7 @@ a {
 
 .projects {
   container: projects / inline-size;  /* the row responds to this width */
-  padding-block-start: var(--space-s);
+  padding-block: var(--space-s) var(--space-l);
 }
 
 /* Tighter than other sections' labels, so the wide feature's caption stays
