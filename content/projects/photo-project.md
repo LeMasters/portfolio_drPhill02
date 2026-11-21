@@ -1,5 +1,5 @@
 ---
-title: Photo project
+title: Deep dive GAME project
 projectKind: case-study
 caption: Digital photography courtesy FujiFilm
 sections:
