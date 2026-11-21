@@ -119,6 +119,7 @@ Your site starts at `https://your-username.github.io/your-repository/`. You can 
 | `content/education/*.md` | One file per degree or certificate |
 | `data/tools.yaml` | Your tools |
 | `data/style.yaml` | Your colour scheme and typeface choices (appearance, not content) |
+| `data/analytics.yaml` | Your visitor-statistics, AI-training and Search Console settings |
 | `static/images/`, `static/files/` | Your uploaded images and files |
 
 These are plain Markdown and YAML files. To move your portfolio somewhere else, download the repository (Code → Download ZIP): your words and images come with you.
