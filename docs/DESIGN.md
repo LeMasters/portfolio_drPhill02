@@ -44,7 +44,9 @@ Contents
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**Next step:** test the remaining rows in the demo repository (Gallery and Education forms, real phones, Safari and Firefox). Then: optional long project pages ("case studies"; three approaches under discussion: headings and images in the Description field, a structured Sections list, or a separate linked page).
+**Next step:** test the remaining rows in the demo repository (Gallery and Education forms, real phones, Safari and Firefox). Then, discussed 21 Nov:
+- **Experience section** (agreed): one Markdown file per job (role, organization, dates, location, optional link, short body), no pages of their own, between Projects and Education; built with the "Add a section" steps (section 10). Open: whether an entry can link to a related project.
+- **Project kinds** (not yet decided): one "Kind" select field in the Projects form choosing both the project's page template and its home-page card (e.g. case study: full-width card and long-form page; project: standard card and page; brief: one line in a compact list). One form holding every field for every kind, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kind's fields). Open: labels, whether a brief links out or to a small page, case-study structure (headings in the body vs. separate fields), any limit on case studies.
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
 
