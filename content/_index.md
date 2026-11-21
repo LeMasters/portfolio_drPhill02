@@ -6,4 +6,4 @@ github: https://github.com/LeMasters
 aiTraining: false
 analytics: none
 ---
-I'm just this guy, see?
+I'm just zis guy, zee?
