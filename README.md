@@ -11,13 +11,23 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
 | **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
-| **Projects** | One entry per project: title, caption, order, image, year, role, links, tags, description | …there are no projects on the page |
+| **Projects** | One entry per project: title, caption, description, order, image, year, role, links, tags | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, image description, order, caption | …the Gallery page and its menu link disappear |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
 | **Appearance** | Colour scheme (Ink or Dusk), typeface for text, typeface for titles | (defaults are used: Ink, Atkinson, Fraunces) |
 
 Each save publishes the site again within a minute or two. The menu at the top lists only the sections that have something in them.
+
+**Don't see your change?** Wait two minutes, then refresh the page (on a Mac, Cmd-Shift-R; on Windows, Ctrl-F5). Browsers often show a copy of a page they saved earlier. If it still hasn't changed, open your repository on GitHub and look at the **Actions** tab: a red ✗ means the site didn't rebuild, and your previous site is still online.
+
+### What happens when you save
+
+1. Pages CMS saves your words and images into your repository on GitHub (it records every version, so nothing is lost).
+2. GitHub notices the change and runs **Hugo**, a program that turns your files into a finished website. Hugo makes smaller copies of your images for phones and laptops, builds a page for each project and gallery image, and adds the details search engines and link previews need.
+3. GitHub Pages publishes the result.
+
+Nothing runs on your site itself; it is plain web pages, which is why it's fast. The full details are in `docs/DESIGN.md`, section 2.
 
 ### Projects: how they are laid out
 
@@ -34,7 +44,7 @@ On a phone, rows of three stack into one column; pairs stay side by side.
 
 ### Images
 
-Upload images through the Projects form. Recommended: **1800 × 1200 px (3:2), under about 400 KB**. The site makes smaller copies for phones automatically. The wide feature crops the top and bottom of the image a little (the placeholder images show how much).
+Upload images through the Projects form. Recommended: **1800 × 1200 px (3:2), under about 400 KB**. The site makes smaller copies for phones automatically, with tidy names: spaces and unusual characters become underscores (`My level 2.png` → `My_level_2-800w.webp`). Your original keeps its name in the repository. The wide feature crops the top and bottom of the image a little (the placeholder images show how much).
 
 Gallery images can be any shape. The Gallery page shows a square crop of each; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
 

@@ -1,6 +1,6 @@
 # DrPhill — design and maintenance guide
 
-Version 0.2.0 · snapshot of 20 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.2.1 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -34,16 +34,17 @@ Contents
 | Colour schemes (both) | **Tested locally** (0.2.0): contrast of every pairing (`dev/check_palettes.py`); each scheme built and rendered in Chrome |
 | Typeface choice (four pairings and an invalid value) | **Tested locally** |
 | Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
-| GitHub Actions build and deploy | **Not yet tested** (no repository yet) |
+| GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_DrPhill02`): builds and publishes within a minute or two of a save |
 | Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
 | Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
-| Pages CMS forms (Profile, Projects, Gallery, Education, Tools, Appearance) | **Not yet tested** |
-| Pages CMS image uploads flowing into Hugo image processing | **Not yet tested** |
+| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Tools, Appearance. **Not yet tested:** Gallery, Education |
+| Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
+| Readable published image names (0.2.1) | **Tested locally**; first GitHub build pending |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**Next step:** a demo repository on GitHub, so the untested rows above can be checked end to end (build, Pages CMS forms and uploads, real phones). Then: optional long project pages ("case studies"; three approaches under discussion: headings and images in the Description field, a structured Sections list, or a separate linked page).
+**Next step:** test the remaining rows in the demo repository (Gallery and Education forms, real phones, Safari and Firefox). Then: optional long project pages ("case studies"; three approaches under discussion: headings and images in the Description field, a structured Sections list, or a separate linked page).
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
 
@@ -66,6 +67,53 @@ flowchart LR
 - **GitHub Actions** runs `.github/workflows/hugo.yml` on every push: installs Hugo 0.147.0 extended, builds with `--baseURL` set to the Pages address, uploads the result.
 - **GitHub Pages** serves the result. The built site is never committed back; the repository holds only what students made, plus the theme.
 - A failed build leaves the previous site live. A successful one is public within a minute or two.
+
+### What happens on each save, step by step
+
+Hugo is a *static-site generator*: a program that reads a folder of text files and templates and writes out a finished website (plain HTML, CSS and images). It runs only at build time, on GitHub's machines. Nothing runs on the published site itself, which is why it is fast, cheap and hard to break. Here is everything that happens between a student clicking **Save** and the change appearing.
+
+**1. In Pages CMS (seconds)**
+
+- The form is checked: required fields (such as a project title) must be filled in.
+- The whole file is rewritten from the form, in the form's field order. Text loses unnecessary quotation marks, comments in the file are deleted, and **empty fields are removed from the file** (the templates treat a missing field as empty, so nothing changes on the site).
+- Keys that have no field in `.pages.yml` are dropped. That is why every key has a field (section 4, "Rules"). Pages CMS can merge instead (`settings: content: merge: true`); not switched on.
+- An uploaded image is committed at once, under its original name, to `static/images/`, as its own commit ("Create static/images/… (via Pages CMS)").
+- The save becomes one commit to the `main` branch ("Update content/projects/… (via Pages CMS)"). That commit is the whole of what Pages CMS does. Every earlier version stays in the repository's history.
+
+**2. In GitHub Actions (about a minute)**
+
+The push to `main` starts the workflow in `.github/workflows/hugo.yml`. Its progress and any errors are visible in the repository's **Actions** tab.
+
+1. A fresh Linux machine copies the repository.
+2. It installs Hugo 0.147.0 (extended edition, which includes WebP support). The version is pinned so a Hugo update can never change a student's site unannounced.
+3. It asks GitHub for the site's address (`username.github.io/repo/`).
+4. It runs `hugo --minify` with that address (step 3 below).
+5. It uploads the finished folder (`public/`) to GitHub Pages, which publishes it.
+
+Saves made in quick succession each start a run. Runs wait their turn rather than cancelling each other, so the last save wins. If a run fails, the previous site stays live and the Actions tab shows a red ✗.
+
+**3. Inside the Hugo build (a few seconds)**
+
+1. **Settings.** Hugo reads `hugo.toml`: the theme's name, which kinds of page to skip (no tag pages, no RSS), and the folder arrangement. `static/images/` is handed to Hugo's image processing, and the originals are excluded from the published site.
+2. **Content.** Hugo reads each Markdown file. The part between the `---` lines (front matter) becomes data the templates can use: title, caption, image, order and so on. The text below becomes HTML; images and links typed inside that text go through the same image and link handling as form fields (the "render hooks"). `data/tools.yaml` and `data/style.yaml` are read as data.
+3. **Deciding what exists.** `partials/sections.html` lists the sections that have content. Both the menu and the home page are drawn from that list. Projects are sorted by Order (a project with no Order goes last) and laid out by how many there are (section 5).
+4. **Pages.** Hugo writes one HTML file per page: home page, one page per project, the Gallery page and one page per gallery image, an unlinked All projects page, and a 404 page. Education entries feed the home page and get no pages of their own.
+5. **Images.** For every JPEG, PNG or WebP image the site uses (`partials/img.html`):
+   - phone photos are turned upright using their orientation data;
+   - copies are made in WebP format at 480, 800, 1200, 1600 and 2000 pixels wide (never wider than the original), at quality 80 with a high-quality resampling filter. A 2.6 MB PNG typically becomes about 50 KB at 1200 px;
+   - the copies are given readable names: the original's name with spaces and other unusual characters turned into underscores, plus the width (`Catbug cartoon still.png` → `Catbug_cartoon_still-800w.webp`);
+   - each `<img>` tag lists every copy with its width, so a phone downloads a small one and a large screen a large one, and states the image's width and height so the page doesn't jump while loading;
+   - for sharing previews (links pasted into Slack, LinkedIn, Discord), a 1200 × 630 JPEG crop is made (`…-share.jpg`).
+   GIF and SVG images are published unchanged. Processed images are cached between local builds, but not between GitHub builds, so each GitHub build redoes them (a few seconds).
+6. **Styles and fonts.** The two stylesheets are joined into one file, minified, and given a fingerprint (a code in the file name that changes whenever the styles change, so browsers never use an outdated copy). The theme's font files are copied as they are.
+7. **Page details.** Into each page's `<head>` go the title and description, the canonical address, sharing-preview tags, schema.org structured data (`Person` on the home page, `CreativeWork` on project pages), the AI-training opt-out tags (unless the student allowed training), a Search Console verification tag (if given), and the visitor-statistics script (only if the student chose a service).
+8. **Site files.** `sitemap.xml` (for search engines) and `robots.txt` (AI-training opt-out and sitemap address) are written.
+9. **Minifying.** Unneeded spaces and line breaks are removed from the HTML to make pages smaller.
+10. **Output.** Everything goes into `public/`, which GitHub Actions publishes. Nothing is written back to the repository.
+
+**4. In the visitor's browser**
+
+GitHub Pages lets browsers keep a copy of each page for up to ten minutes. Someone who looked at the site just before a save may see the old version until they refresh. The README tells students so.
 
 ---
 
@@ -122,6 +170,7 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── bottom-block.html         closing block: name, expertise, contact links
 │           ├── analytics.html            optional GoatCounter or Cloudflare script (Profile choice)
 │           ├── img.html                  ★ every image: WebP srcset, sizes, width/height, lazy
+│           ├── img-name.html             readable names for published image copies
 │           └── url.html                  ★ every link: adds https://, fixes subfolder paths
 │
 ├── docs/DESIGN.md                        this guide
@@ -280,6 +329,9 @@ Each thumbnail links to a plain page with the whole image, a title and a caption
 **Hugo makes the image sizes.**
 Students upload originals, often several megabytes from a phone or camera. At build time Hugo makes WebP copies at up to five widths (never larger than the original), turns phone photos upright, and the page tells each browser which to download. Originals are not published (`excludeFiles` in `hugo.toml`). Set aside: asking students to export at the right size (they won't, reliably), and an image CDN (an outside service).
 
+**Readable names for published images** (0.2.1).
+Hugo names resized copies after the original plus a hash code (`Catbug%20cartoon%20still_hu_7e13…webp`): spaces show as `%20` in addresses, and the codes mean nothing to a reader. The theme now copies each processed image to a plain name: the original's base name with each run of characters other than letters, digits, `-` and `_` replaced by one underscore, then the width (`Catbug_cartoon_still-800w.webp`) or `-share.jpg`. Letter case is kept. Done in the theme (`partials/img-name.html`) rather than at upload, so it covers images already uploaded and needs nothing from students; their originals keep their names in the repository. Set aside: Pages CMS's own upload renaming (`rename: safe`), which uses hyphens and strips existing underscores (`texturedMosaic_portfolio_test` → `texturedmosaicportfoliotest`). Costs: without a hash in the name, a replaced image with the same name may show its old version for up to ten minutes (browser cache); two originals that clean to the same name (`a b.png` and `a_b.png`, or `a.png` and `a.jpg`) would publish over each other.
+
 **Four self-hosted typefaces, two serif and two sans-serif.**
 Consistent appearance across devices without requests to Google or any other company. Variable WOFF2 files, Latin and Latin Extended (names like Łukasz or Dvořák display correctly), about 100–150 KB per page. Chosen for range: Atkinson Hyperlegible Next (legibility), Inter (neutral), Source Serif 4 (classic text serif), Fraunces (expressive display serif). Set aside: system font stacks (no download, but they look different on each device) and Google Fonts (outside requests).
 
@@ -403,8 +455,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 ## 11. Known limitations and open questions
 
 - **Untested on GitHub and in Pages CMS** (section 1).
-- **Pages CMS image paths:** media output is set to `images` (no leading slash); confirm that uploads are saved as `images/…` so `img.html` finds them.
-- **Pages CMS file names:** collections use `filename: "{primary}.md"`; confirm the names it generates.
+- **Pages CMS rewrites files on save** (section 2): comments are deleted, so explanations belong in field descriptions in `.pages.yml`, not in content files.
 - **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
 - **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
 - **Phones held upright:** rows of three stack into one column; pairs stay side by side (each about 170 px wide on a 390 px phone). Alternatives considered for threes: three tiny columns, or a sideways-scrolling strip.
@@ -445,6 +496,12 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 8. Header: the name on two even rows at the left, the menu at the right level with the top of the name (wide screens).
 9. GitHub address in Profile: a GitHub button at the end of the menu (after LinkedIn), a link in the bottom block, and in the structured data's `sameAs` (LinkedIn added there too; it had been missing).
 10. Visitor statistics: an Analytics choice in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and a code field; README instructions for each.
+
+21 November 2026 — version 0.2.1:
+1. First end-to-end test in the demo repository `LeMasters/portfolio_DrPhill02`: Pages CMS saves (Profile, Projects, Tools, Appearance), an image upload and a new project all built and published. Uploads keep their original names in `static/images/`; new projects are named from their title (`last-of-the-big-projects.md`); a project without Order goes last.
+2. Published image copies get readable names (`partials/img-name.html`): underscores for spaces, no hash codes.
+3. Projects form: Project description moved up, under Caption, with a hint.
+4. This guide: "What happens on each save, step by step" (section 2). README: refresh advice, image names, a short version of what happens on save.
 
 ---
 

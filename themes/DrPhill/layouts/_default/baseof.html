@@ -61,7 +61,7 @@
   {{- with $shareSrc -}}
     {{- $r := resources.Get (strings.TrimPrefix "/" .) -}}
     {{- if and $r (in (slice "jpeg" "png" "webp") $r.MediaType.SubType) }}
-  {{- $og := $r.Fill "1200x630 Center jpg" }}{{ $shareImage = $og.Permalink }}
+  {{- $og := $r.Fill "1200x630 Center jpg" }}{{ $og = resources.Copy (printf "%s-share.jpg" (partial "img-name.html" $r)) $og }}{{ $shareImage = $og.Permalink }}
   <meta property="og:image" content="{{ $og.Permalink }}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
