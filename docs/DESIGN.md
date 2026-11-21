@@ -1,6 +1,6 @@
 # DrPhill — design and maintenance guide
 
-Version 0.2.1 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.3.0 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -39,13 +39,13 @@ Contents
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
 | Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
-| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Tools, Appearance. **Not yet tested:** Gallery, Education |
+| Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Gallery (edit and create), Education, Tools, Appearance. **Not yet tested:** Experience (0.3.0), including its project dropdown |
+| Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**; first GitHub build and the Pages CMS form pending |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**Next step:** test the remaining rows in the demo repository (Gallery and Education forms, real phones, Safari and Firefox). Then, discussed 21 Nov:
-- **Experience section** (agreed): one Markdown file per job (role, organization, dates, location, optional link, short body), no pages of their own, between Projects and Education; built with the "Add a section" steps (section 10). Open: whether an entry can link to a related project.
+**Next step:** test the Experience form in Pages CMS (including the project dropdown); real phones, Safari and Firefox. Then, discussed 21 Nov:
 - **Project kinds** (not yet decided): one "Kind" select field in the Projects form choosing both the project's page template and its home-page card (e.g. case study: full-width card and long-form page; project: standard card and page; brief: one line in a compact list). One form holding every field for every kind, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kind's fields). Open: labels, whether a brief links out or to a small page, case-study structure (headings in the body vs. separate fields), any limit on case studies.
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
@@ -125,8 +125,8 @@ GitHub Pages lets browsers keep a copy of each page for up to ten minutes. Someo
 DrPhill/                                  ← one repository per student (copied from the template)
 ├── README.md                             student-facing: how to edit, where content lives
 ├── CLAUDE.md                             instructions for Claude when maintaining the theme
-├── hugo.toml                             site settings, image mounts, education cascade
-├── .pages.yml                            the six Pages CMS forms
+├── hugo.toml                             site settings, image mounts, experience/education cascade
+├── .pages.yml                            the seven Pages CMS forms
 ├── .github/workflows/hugo.yml            build + deploy on every push (Hugo pinned)
 ├── .gitignore
 │
@@ -134,6 +134,7 @@ DrPhill/                                  ← one repository per student (copied
 │   ├── _index.md                         Profile: name, expertise, email, linkedin, github, links, resume; body = About
 │   ├── projects/*.md                     one per project; body = description; each gets its own page
 │   ├── gallery/*.md                      one per image; body = caption; each gets its own page
+│   ├── experience/*.md                   one per job; body = optional detail; no pages of their own
 │   └── education/*.md                    one per degree; body = optional detail; no pages of their own
 ├── data/
 │   ├── tools.yaml                        list of {name, note}
@@ -167,7 +168,8 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── project-card.html         image + title + caption card
 │           ├── gallery-items.html        gallery entries that have an image, in order
 │           ├── pager.html                previous / next links (project and gallery pages)
-│           ├── section-education.html, section-tools.html, section-about.html, section-contact.html
+│           ├── section-experience.html, section-education.html, section-tools.html, section-about.html, section-contact.html
+│           ├── experience-entries.html   experience entries that have content, in order
 │           ├── education-entries.html    education entries that have content, in order
 │           ├── bottom-block.html         closing block: name, expertise, contact links
 │           ├── analytics.html            optional GoatCounter or Cloudflare script (Profile choice)
@@ -235,6 +237,21 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 
 Entries without an image are left out of the Gallery page and the previous/next links. With no entries that have images, there is no Gallery page and no menu link.
 
+### `content/experience/<slug>.md` (Experience form; one file per entry)
+
+| Field | Type | Notes |
+|---|---|---|
+| `role` | string, required | Entry title |
+| `organization` | string | Under the title |
+| `website` | string (URL) | Links the organization's name (through `url.html`). Not `url`: Hugo reserves that key for a page's own address |
+| `location` | string | After the organization, e.g. "Columbus, OH" |
+| `dates` | string | At the right, e.g. "May–Aug 2026" |
+| `weight` | number | Order; 1 first |
+| `project` | path | A project file chosen from a dropdown (Pages CMS `reference` field): `content/projects/<slug>.md`. Shown as "Related project: <title>" linking to the project's page; omitted if no such project exists |
+| *body* | Markdown | Optional detail |
+
+Entries with neither `role` nor `organization` are skipped. Experience entries are not published as pages (the `[[cascade]]` in `hugo.toml`).
+
 ### `content/education/<slug>.md` (Education form; one file per entry)
 
 | Field | Type | Notes |
@@ -277,10 +294,10 @@ A list of `{name, note}`. Items without a `name` are skipped.
    | 4 or more | One wide, then rows of three; a part-filled last row lines up from the left | `projects__row--3` |
 
    The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px.
-3. **Education**, **Tools**, **About**, **Contact**, each only if it has content.
+3. **Experience**, **Education**, **Tools**, **About**, **Contact**, each only if it has content.
 4. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
 
-**One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery (a separate page, not a home-page section), Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
+**One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery (a separate page, not a home-page section), Experience, Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
 
 **Project page** (`projects/single.html`): header (name links home; menu links go to `home#section`), title, year · role, caption, full image (uncropped), description, link buttons, tags, previous/next project in home-page order, bottom block.
 
@@ -333,6 +350,9 @@ Students upload originals, often several megabytes from a phone or camera. At bu
 
 **Readable names for published images** (0.2.1).
 Hugo names resized copies after the original plus a hash code (`Catbug%20cartoon%20still_hu_7e13…webp`): spaces show as `%20` in addresses, and the codes mean nothing to a reader. The theme now copies each processed image to a plain name: the original's base name with each run of characters other than letters, digits, `-` and `_` replaced by one underscore, then the width (`Catbug_cartoon_still-800w.webp`) or `-share.jpg`. Letter case is kept. Done in the theme (`partials/img-name.html`) rather than at upload, so it covers images already uploaded and needs nothing from students; their originals keep their names in the repository. Set aside: Pages CMS's own upload renaming (`rename: safe`), which uses hyphens and strips existing underscores (`texturedMosaic_portfolio_test` → `texturedmosaicportfoliotest`). Costs: without a hash in the name, a replaced image with the same name may show its old version for up to ten minutes (browser cache); two originals that clean to the same name (`a b.png` and `a_b.png`, or `a.png` and `a.jpg`) would publish over each other. Not covered: GIF and SVG images (published unresized, under their original names) and files such as a résumé PDF in `static/files/`; a space in those names still shows as `%20`.
+
+**Experience as its own section, with a project chosen from a dropdown** (0.3.0).
+A fourth-year student's jobs, internships and assistantships had nowhere to go: the Education form has no place for them, and a project entry is the wrong shape. Experience follows the Education pattern (one Markdown file per entry, no pages of their own, shown only when filled in), placed after Projects because it is usually the stronger evidence of the two. An entry can point to a related project through Pages CMS's `reference` field: the student picks from a list of their projects by title, so a mistyped address is impossible, and the file stores the project's path, which the template turns into a link. If the project is later renamed or deleted, the link is left out rather than broken. Set aside: a free-text link field (students would type addresses that break when a project is renamed) and making experience entries a kind of project (they have no image and need no page).
 
 **Four self-hosted typefaces, two serif and two sans-serif.**
 Consistent appearance across devices without requests to Google or any other company. Variable WOFF2 files, Latin and Latin Extended (names like Łukasz or Dvořák display correctly), about 100–150 KB per page. Chosen for range: Atkinson Hyperlegible Next (legibility), Inter (neutral), Source Serif 4 (classic text serif), Fraunces (expressive display serif). Set aside: system font stacks (no download, but they look different on each device) and Google Fonts (outside requests).
@@ -422,9 +442,9 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 **Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
 
-**Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; Profile, Projects, Tools and Appearance forms; an image uploaded through Pages CMS appears resized on the live site.
+**Tested on GitHub and in Pages CMS (21 Nov):** first GitHub build; Profile, Projects, Gallery, Education, Tools and Appearance forms; an image uploaded through Pages CMS appears resized on the live site.
 
-**Still to test (in this order):** Gallery and Education forms in Pages CMS; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
+**Still to test (in this order):** the Experience form in Pages CMS, including the project dropdown; Safari on iPhone and Mac; Firefox; a real Android phone. Then rehearse the student path (Use this template → Pages CMS → first edit), timing each step.
 
 ---
 
@@ -458,7 +478,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 ## 11. Known limitations and open questions
 
-- **Partly untested** (section 1): the Gallery and Education forms in Pages CMS, Safari, Firefox and real phones.
+- **Partly untested** (section 1): the Experience form in Pages CMS, Safari, Firefox and real phones.
 - **Pages CMS rewrites files on save** (section 2): comments are deleted, so explanations belong in field descriptions in `.pages.yml`, not in content files.
 - **Header height:** 27% of a 1440 × 820 laptop screen since the name moved to two rows. Ways to reduce it: a slightly smaller name on wide screens, or a header that shrinks once the page scrolls (CSS only; Firefox lacks scroll-driven animation, so it would stay full size there).
 - **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
@@ -506,6 +526,9 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 2. Published image copies get readable names (`partials/img-name.html`): underscores for spaces, no hash codes.
 3. Projects form: Project description moved up, under Caption, with a hint.
 4. This guide: "What happens on each save, step by step" (section 2). README: refresh advice, image names, a short version of what happens on save.
+
+21 November 2026 — version 0.3.0:
+1. Experience section and form: role, organization, website, location, dates, order, detail, and a related project chosen from a dropdown of the student's projects (Pages CMS `reference` field). Placed after Projects; menu button and section appear only with content; no pages of its own. Two sample entries.
 
 ---
 

@@ -34,14 +34,14 @@ enableRobotsTXT = true
   quality = 80
   resampleFilter = "Lanczos"
 
-# Education entries are building blocks of the home page, not pages of their own:
-# Hugo reads them but publishes no /education/ pages.
+# Experience and Education entries are building blocks of the home page, not pages
+# of their own: Hugo reads them but publishes no /experience/ or /education/ pages.
 [[cascade]]
   [cascade.build]
     render = "never"
     list = "local"
   [cascade.target]
-    path = "{/education,/education/**}"
+    path = "{/experience,/experience/**,/education,/education/**}"
 
 # The All projects page (/projects/) is not linked from the home page, which shows
 # every project; keep it out of the sitemap so search engines see one list, not two.

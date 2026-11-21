@@ -6,13 +6,14 @@ You never need to install anything or touch code. Everything you write is kept i
 
 ## Editing your site
 
-Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and use the six forms:
+Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and use the seven forms:
 
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
 | **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
 | **Projects** | One entry per project: title, caption, description, order, image, year, role, links, tags | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, image description, order, caption | …the Gallery page and its menu link disappear |
+| **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
 | **Appearance** | Colour scheme (Ink or Dusk), typeface for text, typeface for titles | (defaults are used: Ink, Atkinson, Fraunces) |
@@ -49,6 +50,10 @@ Upload images through the Projects form. Recommended: **1800 × 1200 px (3:2), u
 Gallery images can be any shape. The Gallery page shows a square crop of each; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
 
 Always fill in **Image description**: it is read aloud to people who cannot see the image.
+
+### Experience
+
+List jobs, internships and assistantships, most recent first (**Order** 1). If an entry relates to one of your projects (the tool you built during an internship, say), choose it under **Related project**: the entry then links to that project's page. If you later delete or rename the project, the link simply disappears; choose again.
 
 ### Links
 
@@ -99,6 +104,7 @@ Your site starts at `https://your-username.github.io/your-repository/`. You can 
 | `content/_index.md` | Your profile; the text below the `---` lines is your About paragraph |
 | `content/projects/*.md` | One file per project |
 | `content/gallery/*.md` | One file per gallery image; the text below the `---` lines is its caption |
+| `content/experience/*.md` | One file per job, internship or assistantship |
 | `content/education/*.md` | One file per degree or certificate |
 | `data/tools.yaml` | Your tools |
 | `data/style.yaml` | Your colour scheme and typeface choices (appearance, not content) |

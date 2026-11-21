@@ -34,6 +34,7 @@
   </section>
   {{- end }}
 
+  {{- if $has.experience }}{{ partial "section-experience.html" . }}{{ end }}
   {{- if $has.education }}{{ partial "section-education.html" . }}{{ end }}
   {{- if $has.tools }}{{ partial "section-tools.html" . }}{{ end }}
   {{- if $has.about }}{{ partial "section-about.html" . }}{{ end }}

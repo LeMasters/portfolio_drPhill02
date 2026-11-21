@@ -1,12 +1,14 @@
 # Pages CMS configuration for the DrPhill portfolio theme.
 # See https://pagescms.org/docs/configuration/
 #
-# Six forms:
+# Seven forms:
 #   Profile     content/_index.md        name, expertise, email, LinkedIn, GitHub, links, résumé,
 #                                        AI-training choice, Search Console code, analytics;
 #                                        body = About
 #   Projects    content/projects/*.md    one file per project; body = description
 #   Gallery     content/gallery/*.md     one file per image; body = caption
+#   Experience  content/experience/*.md  one file per job; body = optional detail;
+#                                        project = dropdown of the student's projects
 #   Education   content/education/*.md   one file per degree; body = optional detail
 #   Tools       data/tools.yaml          a list: tool name + optional note
 #   Appearance  data/style.yaml          colour scheme; typeface for text and for titles
@@ -201,6 +203,57 @@ content:
         label: Caption
         type: rich-text
         description: The explainer text under the image on its own page. Delete every entry to hide the Gallery.
+
+  - name: experience
+    label: Experience
+    type: collection
+    path: content/experience
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: role
+      fields: [role, organization, dates, weight]
+      sort: [weight, role]
+      default:
+        sort: weight
+        order: asc
+    fields:
+      - name: role
+        label: Role
+        type: string
+        required: true
+        description: e.g. "Tools Engineering Intern" or "Undergraduate Teaching Assistant". Delete every entry to hide the Experience section.
+      - name: organization
+        label: Organization
+        type: string
+      - name: website
+        label: Organization's website (optional)
+        type: string
+        description: Makes the organization's name a link.
+      - name: location
+        label: Location (optional)
+        type: string
+        description: e.g. "Columbus, OH" or "Remote".
+      - name: dates
+        label: Dates
+        type: string
+        description: e.g. "May–Aug 2026" or "Fall 2025 – present".
+      - name: weight
+        label: Order
+        type: number
+        description: 1 appears first. Usually the most recent.
+      - name: body
+        label: What you did (optional)
+        type: rich-text
+        description: One to three sentences, ideally with a result you can point to.
+      - name: project
+        label: Related project (optional)
+        type: reference
+        description: Choose one of your projects to link to it from this entry.
+        options:
+          collection: projects
+          label: "{title}"
+          search: title
 
   - name: education
     label: Education

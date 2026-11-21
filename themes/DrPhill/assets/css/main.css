@@ -28,7 +28,7 @@
      6. Header .............. partials/masthead.html
      7. Section menu ........ partials/nav.html
      8. Projects ............ index.html, partials/project-card.html
-     9. Education, Tools, About, Contact ... partials/section-*.html
+     9. Experience, Education, Tools, About, Contact ... partials/section-*.html
     10. Project page ........ projects/single.html
     11. Gallery ............. gallery/list.html, gallery/single.html
     12. Other pages ......... _default/single.html, _default/list.html, 404.html
@@ -239,7 +239,7 @@ a {
   padding-inline: var(--page-gutter);
 }
 
-/* Education, Tools, About, Contact (section 9). */
+/* Experience, Education, Tools, About, Contact (section 9). */
 .section {
   padding-block-start: var(--space-xl);
   /* Menu jumps land with the heading just below the sticky header. */
@@ -647,11 +647,11 @@ a {
 }
 
 
-/* == 9. Education, Tools, About, Contact (partials/section-*.html) ========== */
+/* == 9. Experience, Education, Tools, About, Contact (partials/section-*.html) */
 /* Each appears only when it has content (partials/sections.html). Section
    spacing and titles are in section 4. */
 
-/* Education: one row per entry, year at the right. */
+/* Experience and Education: one row per entry, dates at the right. */
 .entry-list {
   list-style: none;
   margin: 0;
@@ -695,6 +695,18 @@ a {
 
 .entry__body p {
   margin: 0 0 0.5em;
+}
+
+/* Experience: organization link and related-project link. */
+.entry__sub a,
+.entry__related a {
+  color: var(--color-accent);
+}
+
+.entry__related {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 /* Tools: as many columns as fit, each at least 13rem. */

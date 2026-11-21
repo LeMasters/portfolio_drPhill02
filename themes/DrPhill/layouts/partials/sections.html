@@ -24,6 +24,11 @@
   {{- $out = $out | append (dict "id" "" "label" "Gallery" "page" (site.GetPage "/gallery").RelPermalink) -}}
 {{- end -}}
 
+{{- /* Experience: any entry with a role or an organization filled in. */ -}}
+{{- with partial "experience-entries.html" . -}}
+  {{- $out = $out | append (dict "id" "experience" "label" "Experience") -}}
+{{- end -}}
+
 {{- /* Education: any entry with a degree or a school filled in. */ -}}
 {{- with partial "education-entries.html" . -}}
   {{- $out = $out | append (dict "id" "education" "label" "Education") -}}
