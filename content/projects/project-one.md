@@ -1,6 +1,6 @@
 ---
 title: This is my best I guess
-projectKind: case-study
+projectKind: project
 caption: Here it is, and here is why 'twas done.
 weight: 1
 image: images/Pixel-art globe.png
