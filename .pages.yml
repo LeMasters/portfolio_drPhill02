@@ -120,6 +120,19 @@ content:
         label: Project title
         type: string
         required: true
+      - name: projectKind
+        label: Kind
+        type: select
+        default: project
+        description: "Case study: your fullest projects, told as a story. A full-width card at the top of the home page and a long page. Project: a standard card and page. Brief: one line in a list on the home page and a short page. You can change this at any time without losing anything."
+        options:
+          values:
+            - name: case-study
+              label: Case study
+            - name: project
+              label: Project
+            - name: brief
+              label: Brief
       - name: caption
         label: Caption
         type: string
@@ -127,7 +140,7 @@ content:
       - name: body
         label: Project description
         type: rich-text
-        description: The text of the project's own page. Ordinary paragraphs; headings and images work too.
+        description: "The text of the project's own page. For a case study, use headings to tell the story, for example: The problem · My role · Process · What changed along the way · Results · What I learned. Three or more headings make a contents list. For a brief, two or three sentences are enough."
       - name: weight
         label: Order
         type: number

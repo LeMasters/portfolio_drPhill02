@@ -1,6 +1,6 @@
 # DrPhill — design and maintenance guide
 
-Version 0.4.0 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.5.0 · snapshot of 21 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -44,10 +44,11 @@ Contents
 | Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**, **on GitHub** and **in Pages CMS** (21 Nov) |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
+| Section labels (0.5.0): visible Projects label; all labels larger, left-aligned; space at the end of each section | **Tested locally** and **on GitHub** (21 Nov) |
+| Project kinds (0.5.0): case study, project, brief; home-page layout for each mix (no case studies, one, two; case study + one project; two projects + briefs; briefs only); case-study contents list; "Heading 1" in a description becoming `<h2>` | **Tested locally** (21 Nov). Kind field in Pages CMS **not yet tested** |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
-**0.4.0 closes this series of changes (21 Nov).** Carried forward to the next series: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); project kinds (below); real phones, Safari and Firefox; neutral sample content and the student-path rehearsal before the template goes to students. Discussed 21 Nov:
-- **Project kinds** (not yet decided): one "Kind" select field in the Projects form choosing both the project's page template and its home-page card (e.g. case study: full-width card and long-form page; project: standard card and page; brief: one line in a compact list). One form holding every field for every kind, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kind's fields). Open: labels, whether a brief links out or to a small page, case-study structure (headings in the body vs. separate fields), any limit on case studies.
+**0.5.0 (21 Nov)** adds project kinds and larger section labels. Carried forward: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); the Kind field tested in Pages CMS; real phones, Safari and Firefox; neutral sample content and the student-path rehearsal before the template goes to students. Open: whether to limit the number of case studies (section 11).
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
 
@@ -155,8 +156,9 @@ DrPhill/                                  ← one repository per student (copied
 │       ├── _default/single.html, list.html, 404.html     fallback pages
 │       ├── _default/_markup/render-image.html            images in Markdown → responsive image
 │       ├── _default/_markup/render-link.html             links in Markdown → repaired addresses
+│       ├── _default/_markup/render-heading.html          headings in Markdown: "Heading 1" → <h2>
 │       ├── index.html                    home page: projects, then sections
-│       ├── projects/single.html          a project's page
+│       ├── projects/single.html          a project's page, laid out by its kind
 │       ├── projects/list.html            All projects page (exists, not linked from the home page since 0.2.0)
 │       ├── gallery/list.html             Gallery page: square thumbnails
 │       ├── gallery/single.html           one image, whole, with title and caption
@@ -166,7 +168,9 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── masthead.html             sticky header: name, menu, expertise
 │           ├── name-lines.html           splits the name into two even rows for the header
 │           ├── nav.html                  section menu (row on wide screens, Menu button on narrow)
-│           ├── project-card.html         image + title + caption card
+│           ├── project-card.html         image + title + caption card ("Case study" label)
+│           ├── project-kind.html         a project's kind: case-study, project or brief
+│           ├── project-groups.html       projects grouped by kind, in home-page order
 │           ├── gallery-items.html        gallery entries that have an image, in order
 │           ├── section-gallery.html      home-page Gallery section: chosen thumbnails + "See the full gallery" card
 │           ├── pager.html                previous / next links (project and gallery pages)
@@ -218,6 +222,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | Field | Type | Notes |
 |---|---|---|
 | `title` | string, required | Card title, page title |
+| `projectKind` | `case-study`, `project` or `brief` | Form label "Kind"; default `project` (also when empty or unrecognised). Chooses the home-page card and the page layout (section 5). Not `kind`: Hugo reserves that key |
 | `caption` | string | One line under the card image and page title |
 | `weight` | number | Order, 1 first. Layout by count: see section 5 |
 | `image` | path | `images/…`; 1800 × 1200 (3:2) recommended |
@@ -225,7 +230,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
 | `tags` | list of strings | Shown on the project page |
-| *body* | Markdown | The project description |
+| *body* | Markdown | The project description. Headings become the case-study contents list (three or more) |
 
 ### `content/gallery/<slug>.md` (Gallery form; one file per image)
 
@@ -287,29 +292,37 @@ A list of `{name, note}`. Items without a `name` are skipped.
 **Home page** (`index.html`), top to bottom:
 
 1. **Header** (`masthead.html`, sticky): name (the page's `<h1>`), section menu (`nav.html`), area of expertise. Wide screens (header 640 px and up): the name on two rows at the left, the menu at the right level with the top of the name, the expertise line across the full width below. Narrow screens: the name on one line, with the Menu button beside it.
-2. **Projects**: all of them, in Order, laid out by how many there are:
+2. **Projects**, under a visible "Projects" label, grouped by kind (`project-groups.html`), each kind in Order:
+   - **Case studies**: each a wide card, at the top, marked "Case study" before its title.
+   - **Projects**: with no case studies, laid out by how many there are:
 
-   | Projects | Layout | Row class |
-   |---|---|---|
-   | 1 | One wide project | none |
-   | 2 | Two side by side (no wide feature) | `projects__row--2` |
-   | 3 | One wide, then two side by side | `projects__row--2` |
-   | 4 or more | One wide, then rows of three; a part-filled last row lines up from the left | `projects__row--3` |
+     | Projects | Layout | Row class |
+     |---|---|---|
+     | 1 | One wide project | none |
+     | 2 | Two side by side (no wide feature) | `projects__row--2` |
+     | 3 | One wide, then two side by side | `projects__row--2` |
+     | 4 or more | One wide, then rows of three; a part-filled last row lines up from the left | `projects__row--3` |
 
-   The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px.
+     After one or more case studies, all projects go in rows: two across for one or two projects, three across for more.
+   - **Briefs**: one line each (title, caption, year), in a list at the end of the section, headed "More projects" when cards come before it. The whole line is the link.
+
+   The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px. Only the first wide card's image loads at once (`fetchpriority="high"`); with no wide card, the first two in the row do.
 3. **Gallery** (`section-gallery.html`): the images ticked "Show on home page", in Order, as many as are ticked (the first five if none is ticked), as square thumbnails, then a "See the full gallery →" tile linking to the Gallery page.
 4. **Experience**, **Education**, **Tools**, **About**, **Contact**, each only if it has content.
 5. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
 
 **One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery, Experience, Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
 
-**Project page** (`projects/single.html`): header (name links home; menu links go to `home#section`), title, year · role, caption, full image (uncropped), description, link buttons, tags, previous/next project in home-page order, bottom block.
+**Project page** (`projects/single.html`), by kind. All three: header (name links home; menu links go to `home#section`), previous/next project in home-page order (case studies, projects, briefs), bottom block.
+- **Project**: title, year · role, caption, full image (uncropped), description, link buttons, tags.
+- **Case study**: "Case study" label, title, caption, full image; then an at-a-glance panel (role, year, tags, link buttons, and a numbered contents list when the description has three or more second-level headings) beside the description, which is set slightly larger. Wide screens (56 rem and up): the panel in a 13 rem column at the left, staying in view below the sticky header; narrow screens: the panel above the description.
+- **Brief**: as a project, in a narrower left-aligned column (44 rem) with a smaller title and image.
 
 **Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
 
 **Gallery image page** (`gallery/single.html`): "← Gallery" link, the whole image (uncropped, at most 80% of the screen's height, centred on a tinted panel), title, caption, previous/next image (`pager.html`, shared with project pages), bottom block.
 
-**All projects page** (`projects/list.html`): every project as a card, in order. Since 0.2.0 the home page shows every project, so nothing links here; Hugo still builds it at `/projects/`.
+**All projects page** (`projects/list.html`): every project as a card, in home-page order. Since 0.2.0 the home page shows every project, so nothing links here; Hugo still builds it at `/projects/`.
 
 **Every image** goes through `img.html`; every student-typed link goes through `url.html`, including images and links written inside Markdown (render hooks).
 
@@ -373,6 +386,12 @@ Hugo only concatenates, minifies and fingerprints. Every colour, typeface, size 
 **Mobile first, with container queries.**
 Base rules serve the narrowest screens. Wider layouts respond to the space a component has, not the window, which also keeps the layout correct inside narrow panels and previews.
 
+**Section labels: visible, larger, left-aligned** (0.5.0).
+A reviewer found that the wide feature, directly under the name with no visible heading, read as a masthead illustration rather than a project. The Projects heading, previously hidden, is now shown like the other section labels, and all labels went from 0.8 rem to `--text-label` (about 1.5× the menu text on a phone, 2× on a laptop), in the menu's style (bold capitals, muted). Right alignment, echoing the menu, was tried and dropped. The space above and below the Projects label is tighter than elsewhere so the feature caption stays above the fold on a 1440 × 820 laptop (about 20 px to spare). Each section now ends with `--space-l` of padding, so sections no longer crowd the next one's rule. Set aside for now: a persistent "View project →" cue on cards.
+
+**Project kinds: case study, project, brief** (0.5.0).
+Students' projects differ in depth: a capstone deserves a long account, a game-jam entry a line. One Kind field in the Projects form chooses both the home-page card and the page. Every field stays in one form, so switching kinds never loses text (Pages CMS drops keys a form doesn't define; its "block" field type would lose the other kinds' fields). Case studies come first and always wide, because they are the work a student most wants read; briefs come last as a list, so short work is present without taking a card's space. Case-study structure is prompted, not enforced: the description's form hint suggests headings (The problem · My role · Process · What changed along the way · Results · What I learned), and three or more headings produce a contents list. This keeps one description field, portable Markdown, and the student's own judgement about what the story needs; the at-a-glance panel puts role, year, tags and links where a reviewer looks first. A brief links to a small page of its own rather than straight out, so every project has an address on the student's site. A heading set as "Heading 1" in the editor becomes `<h2>` (`render-heading.html`), keeping one `<h1>` per page. Set aside: separate fields for each part of a case study (firmer, but rigid and less portable); a second, medium-based choice (playable game, visual work, video); briefs linking directly to itch.io or GitHub.
+
 **Cards with a "stretched link".**
 The title is the link; a CSS overlay makes the whole card clickable. Screen readers hear "Project Two", not the whole card read out as one long link.
 
@@ -396,7 +415,7 @@ The theme supplies the technical basics: descriptive `<title>` and description, 
 **Small decisions**
 
 - Favicon: the student's initials drawn as SVG inside the page. No file to upload, no missing-icon request.
-- Sharing preview: a 1200 × 630 crop of the project image (on the home page, the feature project's).
+- Sharing preview: a 1200 × 630 crop of the project image (on the home page, the first project in home-page order).
 - Search data: a schema.org `Person` with the student's links.
 - Education and Experience entries have no pages of their own; projects and gallery images do.
 - The bottom block repeats contact links, so a visitor who reaches the end can act without scrolling back.
@@ -445,7 +464,7 @@ Also run `python3 -I dev/check_content.py` (configuration and content files pars
 
 Building at a subfolder address matters: it is how GitHub Pages serves student sites, and it catches paths with a leading slash.
 
-**What `dev/check_site.py` checks:** on the home, All projects and Gallery pages, console errors; one `<h1>` and no skipped heading levels; alt text and dimensions on every image; no empty links (a link named by its image's alt text counts as named) or duplicate ids; keyboard order; and at phone, tablet and laptop sizes: header height, no sideways scrolling, feature caption above the fold, every menu jump landing just below the header, and the phone menu closing correctly.
+**What `dev/check_site.py` checks:** on the home, All projects and Gallery pages, and on one project page of each kind found on the home page, console errors; one `<h1>` and no skipped heading levels; alt text and dimensions on every image; no empty links (a link named by its image's alt text counts as named) or duplicate ids; keyboard order; and at phone, tablet and laptop sizes: header height, no sideways scrolling, feature caption above the fold, every menu jump landing just below the header, and the phone menu closing correctly.
 
 **Also checked by hand during development (19 Nov):** contrast ratios; every template class is styled and every styled class exists; every CSS custom property used is defined; empty-section builds (no Education, Tools, About or LinkedIn → no trace of them; nothing but a name → no menu); typeface pairings and an invalid value. For 0.2.0: builds with 1, 2, 3, 4, 5 and 7 projects, measuring each card's position and width at 1440 and 390 px. Gallery: thumbnail sizes and columns at 390 and 1440 px, portrait and panorama image pages fit the screen, previous/next order, menu item marked current, and a build with no gallery entries (no page, no menu item).
 
@@ -494,6 +513,8 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 - **Gallery entries without an image** are hidden from the Gallery page but Hugo still builds a page for them (unlinked). The Pages CMS form marks the image as required, so this should only happen through direct file edits.
 - **Gallery thumbnails crop to squares**, so a panorama shows only its middle. A student can choose what is in the middle; a focal-point field would need one more form field.
 - **Many projects:** every project appears on the home page, so a student with twelve projects gets four rows. A cap (e.g. show the first seven, link to All projects for the rest) is a one-line change if wanted.
+- **Number of case studies:** not limited. Each is a full-width card, so three or more push ordinary projects far down the page. A limit (e.g. the first two case studies wide, the rest shown as projects) is open.
+- **Kind field in Pages CMS:** tested locally with files written by hand; not yet saved through the form.
 - **Scripts covered:** Latin and Latin Extended only. Greek, Cyrillic or Vietnamese names would show in fallback fonts; add those subsets in `dev/build_fonts.py` if needed.
 - **Repository weight:** about 700 KB of font files in every student repository (visitors download only what is used).
 - **Build time:** image processing adds a few seconds per build; Hugo's cache (`resources/_gen`) is not kept between GitHub builds.
@@ -543,6 +564,12 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 2. `dev/check_site.py` also checks the Gallery page, and counts a link named by its image's alt text as named.
 3. Gallery form: "Show on home page" placed directly under the image.
 4. Closing version of this series. Tested on GitHub and in all seven Pages CMS forms. Snapshot: `DrPhill-0.4.0.zip` (template with sample content).
+
+21 November 2026 — version 0.5.0:
+1. Section labels: the Projects heading made visible; all labels larger (`--text-label`) and left-aligned (right alignment tried and dropped); tighter space around the Projects label so the feature caption stays above the fold; `--space-l` of padding at the end of every home-page section.
+2. Project kinds: a Kind field (`projectKind`: case study, project, brief) in the Projects form. Case studies: wide cards first, marked "Case study"; a long page with an at-a-glance panel and a contents list. Briefs: one-line list at the end of the Projects section; a short page. Previous/next links, the All projects page and the sharing image follow the same order. Sample case study and two sample briefs added.
+3. Headings typed as "Heading 1" in a description become `<h2>` (`render-heading.html`); headings in descriptions styled.
+4. `dev/check_site.py` also checks one project page of each kind.
 
 ---
 

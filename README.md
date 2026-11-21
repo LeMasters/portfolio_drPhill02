@@ -11,7 +11,7 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
 | **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
-| **Projects** | One entry per project: title, caption, description, order, image, year, role, links, tags | …there are no projects on the page |
+| **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, order, image, year, role, links, tags | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, whether to show it on the home page, image description, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
@@ -30,9 +30,19 @@ Each save publishes the site again within a minute or two. The menu at the top l
 
 Nothing runs on your site itself; it is plain web pages, which is why it's fast. The full details are in `docs/DESIGN.md`, section 2.
 
-### Projects: how they are laid out
+### Projects: kinds and layout
 
-All your projects appear on the home page, in **Order** (1 first). The layout adjusts to how many you have:
+Each project has a **Kind**:
+
+| Kind | On the home page | Its own page |
+|---|---|---|
+| **Case study** | A full-width card at the top, marked "Case study" | A long read: an at-a-glance panel (role, year, tags, links) beside your description, with a contents list when you use three or more headings |
+| **Project** (the usual choice) | A card, laid out as below | Title, image, description, links, tags |
+| **Brief** | One line in a list at the end of Projects | A short page |
+
+For a case study, use headings in the description to tell the story, for example: *The problem · My role · Process · What changed along the way · Results · What I learned*. You can change a project's kind at any time; nothing you've written is lost.
+
+Within each kind, projects appear in **Order** (1 first). Without any case studies, the layout adjusts to how many projects you have:
 
 | Projects | Layout |
 |---|---|
@@ -41,7 +51,7 @@ All your projects appear on the home page, in **Order** (1 first). The layout ad
 | 3 | One wide, then two side by side |
 | 4 or more | One wide, then rows of three; a last row that isn't full lines up from the left |
 
-On a phone, rows of three stack into one column; pairs stay side by side.
+With case studies, the case studies are the wide ones, and all your projects go in rows beneath them. On a phone, rows of three stack into one column; pairs stay side by side.
 
 ### Images
 

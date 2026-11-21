@@ -54,7 +54,7 @@
   {{- $shareImage := "" -}}
   {{- $shareSrc := .Params.image -}}
   {{- if and .IsHome (not $shareSrc) -}}
-    {{- with index ((where site.RegularPages "Section" "projects").ByWeight) 0 }}{{ $shareSrc = .Params.image }}{{ end -}}
+    {{- with index (partialCached "project-groups.html" . "project-groups").all 0 }}{{ $shareSrc = .Params.image }}{{ end -}}
   {{- else if and (eq .Kind "section") (eq .Section "gallery") -}}
     {{- with index (partial "gallery-items.html" .) 0 }}{{ $shareSrc = .Params.image }}{{ end -}}
   {{- end -}}

@@ -40,7 +40,19 @@ with sync_playwright() as p:
     pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
     pg.on("response", lambda r: fonts.append(r.url.rsplit("/", 1)[-1]) if r.url.endswith(".woff2") else None)
     print("Structure")
-    for path in ["", "projects/", "gallery/"]:
+    # Also one project page of each kind found on the home page (case study: the
+    # page a "Case study" card links to; brief: the first brief; project: the first
+    # other card).
+    pg.goto(base); pg.wait_for_load_state("networkidle")
+    kinds = pg.evaluate("""() => {
+      const rel = a => a ? a.getAttribute('href') : null;
+      return [
+        rel(document.querySelector('.card:has(.card__kind) .card__link')),
+        rel(document.querySelector('.card:not(:has(.card__kind)) .card__link')),
+        rel(document.querySelector('.brief__link'))].filter(Boolean) }""")
+    base_path = "/" + base.split("://", 1)[1].split("/", 1)[1]
+    kind_paths = [k[len(base_path):] if k.startswith(base_path) else k.lstrip("/") for k in kinds]
+    for path in ["", "projects/", "gallery/"] + kind_paths:
         pg.goto(base + path); pg.wait_for_load_state("networkidle")
         r = pg.evaluate("""() => ({
           headings: [...document.querySelectorAll('h1,h2,h3')].map(h => +h.tagName[1]),

@@ -1,38 +1,80 @@
 {{ define "main" }}
+{{- /*
+  A project's page. The Kind field (partials/project-kind.html) chooses the layout:
+    project     title, year · role, caption, image, description, link buttons, tags
+    case-study  a long read: "Case study" label, title, caption, image; then an
+                at-a-glance panel (year, role, tags, links, and a contents list when
+                the description has three or more headings) beside the description
+                on wide screens, above it on narrow ones
+    brief       the project layout in a narrower column with a smaller title and image
+*/ -}}
+{{- $kind := partial "project-kind.html" . -}}
+{{- $g := partialCached "project-groups.html" . "project-groups" -}}
+{{- $links := where (.Params.links | default slice) "url" "!=" "" -}}
+{{- $sizes := cond (eq $kind "brief") "(min-width: 48rem) 44rem, 94vw" "(min-width: 74rem) 69rem, 94vw" -}}
 {{ partial "masthead.html" . }}
 
-<main id="main" class="wrap project">
+<main id="main" class="wrap project project--{{ $kind }}">
   <article>
     <header class="project__head">
+      {{- if eq $kind "case-study" }}<p class="project__kind">Case study</p>{{ end }}
       <h1 class="project__title">{{ .Title }}</h1>
+      {{- if ne $kind "case-study" }}
       {{- $meta := slice -}}
       {{- with .Params.year }}{{ $meta = $meta | append . }}{{ end -}}
       {{- with .Params.role }}{{ $meta = $meta | append . }}{{ end -}}
       {{- with $meta }}<p class="project__meta">{{ delimit . " · " }}</p>{{ end }}
+      {{- end }}
       {{- with .Params.caption }}<p class="project__caption">{{ . }}</p>{{ end }}
     </header>
 
     {{- with .Params.image }}
     <figure class="project__image">
-      {{ partial "img.html" (dict "src" . "alt" ($.Params.alt | default "") "eager" true "sizes" "(min-width: 74rem) 69rem, 94vw") }}
+      {{ partial "img.html" (dict "src" . "alt" ($.Params.alt | default "") "eager" true "sizes" $sizes) }}
     </figure>
     {{- end }}
 
-    {{- with .Content }}<div class="project__body">{{ . }}</div>{{ end }}
+    {{- if eq $kind "case-study" }}
+    {{- /* Contents: the description's second-level headings, if there are three or more. */ -}}
+    {{- $toc := findRESubmatch `<h2 id="([^"]+)">(.*?)</h2>` (string .Content) -}}
+    <div class="study">
+      <aside class="study__glance" aria-label="At a glance">
+        <dl class="study__facts">
+          {{- with .Params.role }}<div><dt>Role</dt><dd>{{ . }}</dd></div>{{ end }}
+          {{- with .Params.year }}<div><dt>Year</dt><dd>{{ . }}</dd></div>{{ end }}
+          {{- with .Params.tags }}<div><dt>Tags</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+        </dl>
+        {{- with $links }}
+        <ul class="project__links">
+          {{- range . }}<li><a class="button" href="{{ partial "url.html" .url }}">{{ .label | default "View project" }}</a></li>{{ end }}
+        </ul>
+        {{- end }}
+        {{- if ge (len $toc) 3 }}
+        <nav class="study__contents" aria-label="Contents">
+          <p class="study__contents-title">Contents</p>
+          <ol>
+            {{- range $toc }}<li><a href="#{{ index . 1 }}">{{ index . 2 | plainify | safeHTML }}</a></li>{{ end }}
+          </ol>
+        </nav>
+        {{- end }}
+      </aside>
+      {{- with .Content }}<div class="project__body study__body">{{ . }}</div>{{ end }}
+    </div>
 
-    {{- $links := where (.Params.links | default slice) "url" "!=" "" -}}
+    {{- else }}
+    {{- with .Content }}<div class="project__body">{{ . }}</div>{{ end }}
     {{- with $links }}
     <ul class="project__links">
       {{- range . }}<li><a class="button" href="{{ partial "url.html" .url }}">{{ .label | default "View project" }}</a></li>{{ end }}
     </ul>
     {{- end }}
-
     {{- with .Params.tags }}
     <ul class="project__tags" aria-label="Tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+    {{- end }}
     {{- end }}
   </article>
 
   {{- /* Previous / next project, in the same order as the home page. */}}
-  {{ partial "pager.html" (dict "page" . "pages" (where site.RegularPages "Section" "projects").ByWeight "label" "More projects") }}
+  {{ partial "pager.html" (dict "page" . "pages" $g.all "label" "More projects") }}
 </main>
 {{ end }}
