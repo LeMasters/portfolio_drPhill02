@@ -71,7 +71,8 @@
   --tracking-title: -0.02em;        /* letter-spacing for large titles */
 
   /* Type sizes. Fluid sizes mix rem and vw, so they still grow when a reader zooms. */
-  --text-xs: 0.8rem;                                    /* menu, section labels, tags */
+  --text-xs: 0.8rem;                                    /* menu, tags */
+  --text-label: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);  /* section labels: 2–3 × the menu */
   --text-sm: 0.92rem;                                   /* captions, notes */
   --text-base: 1.0625rem;                               /* body text */
   --text-md: 1.15rem;                                   /* entry titles, contact links */
@@ -246,13 +247,17 @@ a {
   scroll-margin-block-start: calc(var(--space-s) - var(--space-xl));
 }
 
+/* Section labels (Projects, Gallery, Experience…): right-aligned under the rule,
+   echoing the right-aligned menu that leads to them. */
 .section__title {
   margin: 0 0 var(--space-m);
   padding-block-start: var(--space-xs);
   border-block-start: 1px solid var(--color-rule);
-  font-size: var(--text-xs);
+  font-size: var(--text-label);
   font-weight: var(--weight-bold);
-  letter-spacing: 0.1em;
+  line-height: var(--leading-tight);
+  letter-spacing: 0.06em;
+  text-align: end;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
@@ -502,7 +507,13 @@ a {
 
 .projects {
   container: projects / inline-size;  /* the row responds to this width */
-  padding-block-start: clamp(1.25rem, 1rem + 1vw, 2rem);
+  padding-block-start: var(--space-s);
+}
+
+/* Tighter than other sections' labels, so the wide feature's caption stays
+   above the fold on a laptop. */
+.projects > .section__title {
+  margin-block-end: var(--space-s);
 }
 
 /* Card: image, title, caption. The title link's ::after covers the whole card,
