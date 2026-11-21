@@ -41,7 +41,7 @@ Contents
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
 | Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Tools, Appearance. **Not yet tested:** Gallery, Education |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
-| Readable published image names (0.2.1) | **Tested locally**; first GitHub build pending |
+| Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
 **Next step:** test the remaining rows in the demo repository (Gallery and Education forms, real phones, Safari and Firefox). Then: optional long project pages ("case studies"; three approaches under discussion: headings and images in the Description field, a structured Sections list, or a separate linked page).
