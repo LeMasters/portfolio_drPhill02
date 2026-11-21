@@ -1041,6 +1041,63 @@ a {
   font-size: var(--title-xs);
 }
 
+/* Sections (partials/project-sections.html): picture beside text, one row per
+   section, the picture swapping sides on each row. Narrow (under 40rem of
+   space): picture above text. A row with only a picture or only text: one
+   column; text keeps its reading width. */
+.sections {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-xl);
+  margin-block-start: var(--space-xl);
+  padding-block-start: var(--space-xl);
+  border-block-start: 1px solid var(--color-rule);
+}
+
+.sections__row {
+  display: grid;
+  gap: var(--space-s) var(--space-l);
+  align-items: center;
+}
+
+.sections__image {
+  margin: 0;
+  background: var(--color-placeholder);
+}
+
+.sections__image img {
+  inline-size: 100%;
+}
+
+.sections__text {
+  max-inline-size: 40rem;
+  font-size: var(--text-md);
+}
+
+.sections__text h2 {
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-title);
+  font-size: var(--title-xs);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+}
+
+.sections__text > :last-child {
+  margin-block-end: 0;
+}
+
+/* Fallback: without container queries, rows stay stacked at every width. */
+@container (min-width: 40rem) {
+  .sections__row--left,
+  .sections__row--right {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sections__row--right .sections__image {
+    order: 2;
+  }
+}
+
 
 /* == 11. Gallery (partials/section-gallery.html, gallery/*.html) ============ */
 /* Square thumbnails, as many columns as fit (two on a phone), on the home page's

@@ -7,6 +7,8 @@
                 the description has three or more headings) beside the description
                 on wide screens, above it on narrow ones
     brief       the project layout in a narrower column with a smaller title and image
+  Every kind then shows its Sections, if any (partials/project-sections.html):
+  picture and text side by side, swapping sides on each row.
 */ -}}
 {{- $kind := partial "project-kind.html" . -}}
 {{- $g := partialCached "project-groups.html" . "project-groups" -}}
@@ -35,8 +37,15 @@
     {{- end }}
 
     {{- if eq $kind "case-study" }}
-    {{- /* Contents: the description's second-level headings, if there are three or more. */ -}}
-    {{- $toc := findRESubmatch `<h2 id="([^"]+)">(.*?)</h2>` (string .Content) -}}
+    {{- /* Contents: the description's second-level headings, then the sections'
+           headings, if there are three or more in all. */ -}}
+    {{- $toc := slice -}}
+    {{- range findRESubmatch `<h2 id="([^"]+)">(.*?)</h2>` (string .Content) }}
+      {{- $toc = $toc | append (dict "id" (index . 1) "text" (index . 2)) -}}
+    {{- end -}}
+    {{- range (.Params.sections | default slice) }}
+      {{- if and .heading (or .image .text) }}{{ $toc = $toc | append (dict "id" (printf "section-%s" (anchorize .heading)) "text" .heading) }}{{ end -}}
+    {{- end -}}
     <div class="study">
       <aside class="study__glance" aria-label="At a glance">
         <dl class="study__facts">
@@ -53,7 +62,7 @@
         <nav class="study__contents" aria-label="Contents">
           <p class="study__contents-title">Contents</p>
           <ol>
-            {{- range $toc }}<li><a href="#{{ index . 1 }}">{{ index . 2 | plainify | safeHTML }}</a></li>{{ end }}
+            {{- range $toc }}<li><a href="#{{ .id }}">{{ .text | plainify | safeHTML }}</a></li>{{ end }}
           </ol>
         </nav>
         {{- end }}
@@ -72,6 +81,8 @@
     <ul class="project__tags" aria-label="Tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
     {{- end }}
     {{- end }}
+
+    {{ partial "project-sections.html" (dict "page" . "kind" $kind) }}
   </article>
 
   {{- /* Previous / next project, in the same order as the home page. */}}

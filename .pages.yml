@@ -141,6 +141,30 @@ content:
         label: Project description
         type: rich-text
         description: "The text of the project's own page. For a case study, use headings to tell the story, for example: The problem · My role · Process · What changed along the way · Results · What I learned. Three or more headings make a contents list. For a brief, two or three sentences are enough."
+      - name: sections
+        label: Sections (picture and text)
+        type: object
+        list: true
+        description: "Optional. Each section is a picture beside a block of text, shown after the description. The picture swaps sides with every section; on phones they stack. Add as many as the story needs."
+        fields:
+          - name: heading
+            label: Heading
+            type: string
+            description: e.g. "First prototype". Optional.
+          - name: image
+            label: Picture
+            type: image
+            description: Any shape; shown whole, about half the page wide.
+            options:
+              media: images
+          - name: alt
+            label: Picture description
+            type: string
+            description: For people who cannot see the picture.
+          - name: text
+            label: Text
+            type: text
+            description: "A paragraph or two. Leave a blank line between paragraphs; **bold** and [links](https://example.com) work."
       - name: weight
         label: Order
         type: number

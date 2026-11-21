@@ -1,0 +1,41 @@
+{{- /*
+  A project's Sections: a picture beside a block of text, one row per section,
+  the picture swapping sides on each row (left, right, left…). Where the space is
+  narrow (under 40rem: phones, or a brief's column) each row stacks: picture,
+  then text. A row with only a picture or only text spans the width and does not
+  count toward the alternation.
+
+  Usage: {{ partial "project-sections.html" (dict "page" . "kind" $kind) }}
+  Reads .Params.sections: a list of {heading, image, alt, text}. Entries with
+  neither a picture nor text are skipped. Headings are <h2> with an id
+  ("section-<heading>") that the case study's contents list links to.
+*/ -}}
+{{- $rows := slice -}}
+{{- range (.page.Params.sections | default slice) -}}
+  {{- if or .image .text }}{{ $rows = $rows | append . }}{{ end -}}
+{{- end -}}
+{{- with $rows }}
+{{- $sizes := cond (eq $.kind "brief") "(min-width: 48rem) 44rem, 94vw" "(min-width: 74rem) 33rem, (min-width: 44rem) 46vw, 94vw" -}}
+{{- $n := 0 }}
+<div class="sections">
+  {{- range . }}
+  {{- $row := . -}}
+  {{- $pair := and .image .text -}}
+  {{- $mod := "sections__row--single" -}}
+  {{- if $pair }}{{ $n = add $n 1 }}{{ $mod = cond (modBool $n 2) "sections__row--right" "sections__row--left" }}{{ end }}
+  <section class="sections__row {{ $mod }}"{{ with .heading }} aria-labelledby="section-{{ anchorize . }}"{{ end }}>
+    {{- with .image }}
+    <figure class="sections__image">
+      {{ partial "img.html" (dict "src" . "alt" ($row.alt | default "") "sizes" $sizes) }}
+    </figure>
+    {{- end }}
+    {{- if or .heading .text }}
+    <div class="sections__text">
+      {{- with .heading }}<h2 id="section-{{ anchorize . }}">{{ . }}</h2>{{ end }}
+      {{- with .text }}{{ $.page.RenderString (dict "display" "block") . }}{{ end }}
+    </div>
+    {{- end }}
+  </section>
+  {{- end }}
+</div>
+{{- end }}
