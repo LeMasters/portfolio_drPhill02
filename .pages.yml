@@ -191,15 +191,15 @@ content:
         description: Any shape. The gallery shows a square crop; the image's own page shows it whole. Up to 2000 px on the long side, under about 500 KB.
         options:
           media: images
-      - name: alt
-        label: Image description
-        type: string
-        description: For people who cannot see the image.
       - name: home
         label: Show on home page
         type: boolean
         default: false
         description: Ticked images appear in the Gallery section of your home page, in Order, as many as you tick. If you tick none, the first five appear. Every image is always on the full Gallery page.
+      - name: alt
+        label: Image description
+        type: string
+        description: For people who cannot see the image.
       - name: weight
         label: Order
         type: number

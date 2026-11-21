@@ -12,7 +12,7 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 |---|---|---|
 | **Profile** | Your name, area of expertise, email, LinkedIn and GitHub addresses, other links, résumé (PDF), your About paragraph, and three settings: AI training (off unless you turn it on), an optional Google Search Console code, and visitor statistics (off unless you choose a service) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
 | **Projects** | One entry per project: title, caption, description, order, image, year, role, links, tags | …there are no projects on the page |
-| **Gallery** | One entry per image: title, image, image description, whether to show it on the home page, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
+| **Gallery** | One entry per image: title, image, whether to show it on the home page, image description, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
 | **Tools** | The software and tools you use, each with an optional note | …the Tools section disappears |
