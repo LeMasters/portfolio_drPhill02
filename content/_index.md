@@ -1,5 +1,5 @@
 ---
-name: Garrison LeMasters
+name: Garrison Winfield LeMasters
 expertise: Faculty member, Games and Simulation, Miami of Ohio, Oxford Ohio
 email: garrison@colophon.org
 github: https://github.com/LeMasters
