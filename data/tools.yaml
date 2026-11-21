@@ -1,8 +1,5 @@
-- name: "Unity"
-  note: "C#; three years"
-- name: "Blender"
-  note: "Modeling, rigging"
-- name: "Figma"
-  note: ""
-- name: "Tool name"
-  note: "Optional: what you use it for, or for how long"
+- name: Unity
+  note: C#; three years
+- name: Blender
+  note: Modeling, rigging
+- name: Figma
