@@ -230,7 +230,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
 | `tags` | list of strings | Shown on the project page |
-| `sections` | list of `{heading, image, alt, text}` | After the description on the project page (`partials/project-sections.html`): picture beside text, picture left on the first row and swapping sides on each row; stacked under 40rem of space. Rows with only a picture or only text span the width and don't count toward the alternation. Headings join a case study's contents list. `text` is Markdown. Prose in front matter: less portable than the body (section 6) |
+| `sections` | list of `{heading, image, alt, text}` | After the description on the project page (`partials/project-sections.html`): picture beside text, picture left on the first row and swapping sides on each row; stacked under 40rem of space. Rows with only a picture or only text span the width and don't count toward the alternation. Headings join a case study's contents list. `text` is Markdown. A new project's form starts with seven entries holding only headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection: `list.default` in `.pages.yml`); entries are folded and show their heading (`list.collapsible.summary`). Prose in front matter: less portable than the body (section 6) |
 | *body* | Markdown | The project description. Headings become the case-study contents list (three or more) |
 
 ### `content/gallery/<slug>.md` (Gallery form; one file per image)
@@ -579,6 +579,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 6. Analytics moved out of Profile into its own form and file (`data/analytics.yaml`: `service`, `code`). Tested locally (GoatCounter, unrecognised Cloudflare code, NONE, no file); **not yet tested in Pages CMS**. Sites made before this change must re-enter their analytics choice in the new form.
 7. AI-training choice and Google Search Console code moved from Profile to the Analytics form (`data/analytics.yaml`). Tested locally (opt-out on, off, no file; verification tag present and absent); **not yet tested in Pages CMS**. Sites made before this change must re-enter a Search Console code, and re-tick AI training if they had allowed it; otherwise the opt-out stays on.
 8. Profile form: About field moved up, under Area of expertise. Form order only; content unchanged.
+9. Sections start with seven suggested headings (Problem, My role, Research, Prototype, Iteration, Outcome, Reflection) and fold to show their heading. Uses `list.default`, which Pages CMS applies (its `lib/schema.ts`, June 2026) but its settings editor flags as an error, since its config checks don't list it; the forms still load. Pages CMS cannot tie a default to Kind, so every new project gets the headings; headings with neither picture nor text are not shown (tested locally). **Not yet tested in Pages CMS.**
 
 ---
 

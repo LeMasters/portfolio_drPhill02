@@ -115,12 +115,23 @@ content:
       - name: body
         label: Project description
         type: rich-text
-        description: "The text of the project's own page. For a case study, use headings to tell the story, for example: The problem · My role · Process · What changed along the way · Results · What I learned. Three or more headings make a contents list. For a brief, two or three sentences are enough."
+        description: "The text of the project's own page. For a case study, keep this to a short opening and tell the story in Sections, below. For a brief, two or three sentences are enough."
       - name: sections
         label: Sections (picture and text)
         type: object
-        list: true
-        description: "Optional. Each section is a picture beside a block of text, shown after the description. The picture swaps sides with every section; on phones they stack. Add as many as the story needs."
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{fields.heading}"
+          default:
+            - heading: Problem
+            - heading: My role
+            - heading: Research
+            - heading: Prototype
+            - heading: Iteration
+            - heading: Outcome
+            - heading: Reflection
+        description: "Each section is a picture beside a block of text, shown after the description; the picture swaps sides with every section, and on phones they stack. A new project starts with seven suggested headings. Fill in the ones that fit, in any order (drag to reorder); rename, repeat or delete them. A section with neither a picture nor text doesn't appear."
         fields:
           - name: heading
             label: Heading
