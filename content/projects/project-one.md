@@ -1,8 +1,9 @@
 ---
-title: Project One (your strongest work)
-caption: "One line: what it is and what you did, e.g. Puzzle game · Unity · solo"
+title: This is my best I guess
+projectKind: case-study
+caption: Here it is, and here is why 'twas done.
 weight: 1
-image: images/texturedMosaic_portfolio_test-1.png
+image: images/Pixel-art globe.png
 alt: textured mosaic, it is, it is.
 year: "2026"
 role: Your role, e.g. Designer and programmer
