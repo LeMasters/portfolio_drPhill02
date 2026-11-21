@@ -40,7 +40,7 @@ Contents
 | Analytics script: NONE, GoatCounter and Cloudflare, with codes typed, as addresses, as pasted snippets and unrecognised; absent from local previews | **Tested locally** (build output) |
 | Analytics with real GoatCounter and Cloudflare accounts | **Not yet tested** |
 | Pages CMS forms | **Tested in Pages CMS** (21 Nov): Profile, Projects (edit and create), Gallery (edit and create), Education, Tools, Appearance. **Not yet tested:** Experience (0.3.0), including its project dropdown |
-| Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**; first GitHub build and the Pages CMS form pending |
+| Experience section (0.3.0): entries, organization link, related-project link, menu button, empty section hidden, link omitted when the chosen project no longer exists | **Tested locally**, and **on GitHub** (21 Nov): section, menu button and related-project link live. **Not yet tested:** the Pages CMS form and its dropdown |
 | Pages CMS image uploads flowing into Hugo image processing | **Tested on GitHub** (21 Nov): uploads land in `static/images/` with their original names, are referenced as `images/…`, and are published as resized WebP copies |
 | Readable published image names (0.2.1) | **Tested on GitHub** (21 Nov): every image on the home page and the sharing image load under their new names |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
