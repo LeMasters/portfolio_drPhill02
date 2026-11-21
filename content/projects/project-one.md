@@ -2,7 +2,7 @@
 title: Project One (your strongest work)
 caption: "One line: what it is and what you did, e.g. Puzzle game · Unity · solo"
 weight: 1
-image: images/project-1-placeholder.jpg
+image: images/texturedMosaic_portfolio_test.png
 alt: Describe the image for someone who cannot see it
 year: "2026"
 role: Your role, e.g. Designer and programmer
