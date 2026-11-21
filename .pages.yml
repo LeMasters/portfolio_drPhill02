@@ -45,6 +45,9 @@ content:
         label: Area of expertise
         type: string
         description: 'One line under your name, e.g. "Game designer: systems and level design".'
+      - name: body
+        label: About you (the About section; leave empty to hide it)
+        type: rich-text
       - name: email
         label: Email
         type: string
@@ -73,9 +76,6 @@ content:
         type: file
         options:
           media: files
-      - name: body
-        label: About you (the About section; leave empty to hide it)
-        type: rich-text
 
   - name: projects
     label: Projects
