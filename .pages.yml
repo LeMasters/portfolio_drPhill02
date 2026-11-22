@@ -207,7 +207,7 @@ content:
         label: Title
         type: string
         required: true
-        description: Shown above the caption on the image's own page.
+        description: Shown under the thumbnail in the Gallery and above the caption on the image's own page.
       - name: image
         label: Image
         type: image

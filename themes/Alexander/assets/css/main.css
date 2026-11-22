@@ -1286,9 +1286,9 @@ html:has(.sections__dialog[open]) {
 }
 
 /* == 11. Gallery (partials/section-gallery.html, gallery/*.html) ============ */
-/* Square thumbnails, as many columns as fit (two on a phone), on the home page's
-   Gallery section and on the Gallery page. Each opens the image's own page, where
-   it is shown whole with its caption. */
+/* Square thumbnails with their titles under them, as many columns as fit (two on
+   a phone), on the home page's Gallery section and on the Gallery page. Each opens
+   the image's own page, where it is shown whole with its caption. */
 
 .gallery__grid {
   display: grid;
@@ -1301,6 +1301,12 @@ html:has(.sections__dialog[open]) {
 
 .gallery__link {
   display: block;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.gallery__frame {
+  display: block;
   aspect-ratio: 1;
   overflow: hidden;
   background: var(--color-placeholder);
@@ -1311,6 +1317,25 @@ html:has(.sections__dialog[open]) {
   block-size: 100%;
   object-fit: cover;
   transition: scale 0.4s ease;
+}
+
+/* The work's title, visible under the thumbnail and part of the link's name.
+   Two lines at most.
+   Fallback: without line-clamp support a long title shows in full. */
+.gallery__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin-block-start: var(--space-2xs);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.gallery__link:hover .gallery__title,
+.gallery__link:focus-visible .gallery__title {
+  text-decoration: underline;
 }
 
 @media (hover: hover) {
@@ -1328,6 +1353,7 @@ html:has(.sections__dialog[open]) {
 .gallery__more {
   display: grid;
   place-items: center;
+  align-self: start; /* square, level with the thumbnails, not stretched to their titles */
   aspect-ratio: 1;
   padding: var(--space-s);
   border: 2px solid var(--color-accent);

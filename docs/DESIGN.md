@@ -1,6 +1,6 @@
 # Alexander — design and maintenance guide
 
-Version 0.6.1 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.6.2 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 Alexander is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -34,7 +34,7 @@ Contents
 | Colour schemes (both) | **Tested locally** (0.2.0): contrast of every pairing (`dev/check_palettes.py`); each scheme built and rendered in Chrome |
 | Typeface choice (four pairings and an invalid value) | **Tested locally** |
 | Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
-| GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_Alexander02`): builds and publishes within a minute or two of a save |
+| GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_DrPhill02`): builds and publishes within a minute or two of a save |
 | Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
 | Gallery on the home page (0.4.0): ticked images in Order; first five when none ticked; "See the full gallery" card; no section without images; menu marks Gallery current on gallery pages | **Tested locally**, **on GitHub** and **in Pages CMS** (21 Nov): ticking and unticking images changes the section as described |
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
@@ -240,9 +240,9 @@ The design reads these files and fields. A future theme can replace `themes/Alex
 
 | Field | Type | Notes |
 |---|---|---|
-| `title` | string, required | Image page title; previous/next link text |
+| `title` | string, required | Shown under the thumbnail in the grids (0.6.2); image page title; previous/next link text |
 | `image` | path, required | `images/…`; any shape, up to 2000 px on the long side |
-| `alt` | string | Alt text; also the thumbnail link's name |
+| `alt` | string | Alt text. In the grids, the thumbnail link reads the alt text (if any), then the visible title; no title-as-alt fallback there (0.6.2) |
 | `home` | boolean, default `false` | Show on the home page's Gallery section. If no entry has it, the first five (by Order) are shown |
 | `weight` | number | Order; 1 first |
 | *body* | Markdown | The caption under the image on its own page |
@@ -315,7 +315,7 @@ A list of `{name, note}`. Items without a `name` are skipped.
    - **Briefs**: one line each (title, caption, year), in a list at the end of the section, headed "More projects" when cards come before it. The whole line is the link.
 
    The template (`index.html`) decides which case applies and writes the row class; the CSS only says how many columns each class has. On narrow screens rows of three become one column (below about 480 px of projects area); pairs stay side by side down to about 350 px. Only the first wide card's image loads at once (`fetchpriority="high"`); with no wide card, the first two in the row do.
-3. **Gallery** (`section-gallery.html`): the images ticked "Show on home page", in Order, as many as are ticked (the first five if none is ticked), as square thumbnails, then a "See the full gallery →" tile linking to the Gallery page.
+3. **Gallery** (`section-gallery.html`): the images ticked "Show on home page", in Order, as many as are ticked (the first five if none is ticked), as square thumbnails with their titles under them, then a "See the full gallery →" tile linking to the Gallery page.
 4. **Experience**, **Education**, **Tools**, **About**, **Contact**, each only if it has content.
 5. **Bottom block** (`bottom-block.html`): name, expertise, contact links, copyright.
 
@@ -326,7 +326,7 @@ A list of `{name, note}`. Items without a `name` are skipped.
 - **Case study** (one reading column, 40 rem, since 0.5.0): "Case study" label; title, caption and the description (set slightly larger), together in a box outlined in the accent colour; then the at-a-glance panel (role, year and tags in a row, link buttons, and a numbered contents list when the description's second-level headings and the Sections' headings number three or more); then the full image, if any; then the title again (when Sections are shown); then the Sections. Until 0.5.0 the panel sat in a 13 rem column at the left of the description, sticky on wide screens; changed at Garrison's request so the description follows the caption.
 - **Brief**: a narrower left-aligned column (44 rem), smaller title: title, year · role, caption, image, description, link buttons, tags. No outlined box and, since 0.6.1, no Sections.
 
-**Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
+**Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails, each with its title under it (two lines at most), in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
 
 **Gallery image page** (`gallery/single.html`): "← Gallery" link, the whole image (uncropped, at most 80% of the screen's height, centred on a tinted panel), title, caption, previous/next image (`pager.html`, shared with project pages), bottom block.
 
@@ -372,6 +372,9 @@ Each thumbnail links to a plain page with the whole image, a title and a caption
 
 **Gallery on the home page too, chosen image by image** (0.4.0).
 Until 0.4.0 every menu item scrolled within the home page except Gallery, which opened a separate page. Artists in particular would see their main work moved off the home page. Now the home page has a Gallery section and the menu points to it; the Gallery page remains as the complete set, with captions. Students tick "Show on home page" per image, so an artist can show many and a developer few; ticked images appear in Order, however many. With none ticked, the first five appear, so the section, and the menu's consistency, never depends on a student having ticked anything. A "See the full gallery →" tile always ends the section, because captions live only on the full page. Set aside: one automatic row (artists would get about five images on a laptop); a 1/2/3-rows setting in Appearance (simpler, but less control than artists want); keeping Gallery as a separate page and marking the difference in the menu.
+
+**Gallery thumbnails show their titles** (0.6.2).
+Until 0.6.2 a thumbnail link held only the image, so its name was the alt text: a screen reader announced one name in the grid ("Here it is! This is it") and the page that opened had another ("Gallery image 1"), and sighted visitors saw no title until they clicked. Now the title appears under each thumbnail inside the link, and the image keeps its alt text, so the link reads the description, then the title. The grid, the image's page and previous/next links all carry the same visible name, and no field was added (title is required; alt text was already asked for). The title-as-alt fallback is dropped in the grids, so an image without alt text is read by its title once, not twice. Titles are limited to two lines. Set aside: the title as alt text with nothing visible (smallest change, but sighted visitors still see no names); a visible title with empty alt (consistent, but the description is not heard in the grid); a hover-only title (unreliable on touch screens and keyboards).
 
 **Hugo makes the image sizes.**
 Students upload originals, often several megabytes from a phone or camera. At build time Hugo makes WebP copies at up to five widths (never larger than the original), turns phone photos upright, and the page tells each browser which to download. Originals are not published (`excludeFiles` in `hugo.toml`). Set aside: asking students to export at the right size (they won't, reliably), and an image CDN (an outside service).
@@ -559,7 +562,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 10. Visitor statistics: an Analytics choice in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and a code field; README instructions for each.
 
 21 November 2026 — version 0.2.1:
-1. First end-to-end test in the demo repository `LeMasters/portfolio_Alexander02`: Pages CMS saves (Profile, Projects, Tools, Appearance), an image upload and a new project all built and published. Uploads keep their original names in `static/images/`; new projects are named from their title (`last-of-the-big-projects.md`); a project without Order goes last.
+1. First end-to-end test in the demo repository `LeMasters/portfolio_DrPhill02`: Pages CMS saves (Profile, Projects, Tools, Appearance), an image upload and a new project all built and published. Uploads keep their original names in `static/images/`; new projects are named from their title (`last-of-the-big-projects.md`); a project without Order goes last.
 2. Published image copies get readable names (`partials/img-name.html`): underscores for spaces, no hash codes.
 3. Projects form: Project description moved up, under Caption, with a hint.
 4. This guide: "What happens on each save, step by step" (section 2). README: refresh advice, image names, a short version of what happens on save.
@@ -601,10 +604,15 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 1. Project pages (kind "project") take a lighter case-study layout: title, year · role, caption and description in the outlined box; link buttons and tags; the image; the Sections. No label, contents list or repeated title.
 2. Briefs show no Sections (the form still offers them; the page ignores them). A brief keeps its image.
 3. Bottom block falls back to "Your Name" like the header (seen in the empty starter template).
-5. Bottom block small print: "© year name · Built Month Year", the month of the build (Hugo's `now` at build time, UTC); it changes on every publish, including rebuilds with no content change.
-6. Renamed from DrPhill to Alexander: theme folder `themes/Alexander`, theme name, forms, docs, maintainer scripts. Snapshot files made before the rename keep their names (`DrPhill-0.4.0.zip`, `DrPhill-0.6.0.zip`); the demo repository keeps its name (`portfolio_DrPhill02`) until renamed on GitHub.
-7. Empty starter template: `Alexander-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
+4. Bottom block small print: "© year name · Built Month Year", the month of the build (Hugo's `now` at build time, UTC); it changes on every publish, including rebuilds with no content change.
+5. Renamed from DrPhill to Alexander: theme folder `themes/Alexander`, theme name, forms, docs, maintainer scripts. Snapshot files made before the rename keep their names (`DrPhill-0.4.0.zip`, `DrPhill-0.6.0.zip`); the demo repository keeps its name (`portfolio_DrPhill02`) until renamed on GitHub.
+6. Empty starter template: `Alexander-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
 Tested locally (project and brief pages with sections; `dev/check_site.py` passes).
+
+22 November 2026 — version 0.6.2:
+1. Gallery thumbnails (home-page section and Gallery page) show the work's title under the image, inside the link; the link reads the alt text, then the title. The title-as-alt fallback is dropped in the grids. Titles clamp to two lines. The "See the full gallery" tile stays square, level with the thumbnails. Raised by an outside review of the gallery's link names.
+2. Gallery form: the Title hint says it shows under the thumbnail; README follows.
+3. DESIGN.md: the demo repository's name corrected to `portfolio_DrPhill02` (the 0.6.1 rename had changed it by mistake in two places).
 
 ---
 

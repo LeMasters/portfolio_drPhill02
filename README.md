@@ -58,7 +58,7 @@ With case studies, the case studies are the wide ones, and all your projects go 
 
 Upload images through the Projects form. Recommended: **1800 × 1200 px (3:2), under about 400 KB**. The site makes smaller copies for phones automatically, with tidy names: spaces and unusual characters become underscores (`My level 2.png` → `My_level_2-800w.webp`). Your original keeps its name in the repository. The wide feature crops the top and bottom of the image a little (the placeholder images show how much).
 
-Gallery images can be any shape. Your home page has a Gallery section: tick **Show on home page** for each image you want there (as many as you like; they appear in Order). If you tick none, the first five appear. The section ends with a link to the full Gallery page, which shows every image as a square crop; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
+Gallery images can be any shape. Your home page has a Gallery section: tick **Show on home page** for each image you want there (as many as you like; they appear in Order). If you tick none, the first five appear. The section ends with a link to the full Gallery page, which shows every image as a square crop with its title under it; clicking one opens its own page with the whole image, its title and your caption, and links to the previous and next image. Up to 2000 px on the long side, under about 500 KB.
 
 Always fill in **Alt text** ("alternative text"): one sentence saying what the image shows. It is read aloud to people who cannot see the image, and search engines use it too.
 
