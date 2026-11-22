@@ -1,8 +1,8 @@
-# DrPhill — design and maintenance guide
+# Alexander — design and maintenance guide
 
 Version 0.6.1 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
-DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
+Alexander is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
 Contents
 
@@ -34,7 +34,7 @@ Contents
 | Colour schemes (both) | **Tested locally** (0.2.0): contrast of every pairing (`dev/check_palettes.py`); each scheme built and rendered in Chrome |
 | Typeface choice (four pairings and an invalid value) | **Tested locally** |
 | Font regeneration (`dev/build_fonts.py`) | **Tested**: reproduces the shipped font files exactly |
-| GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_DrPhill02`): builds and publishes within a minute or two of a save |
+| GitHub Actions build and deploy | **Tested on GitHub** (21 Nov, demo repository `LeMasters/portfolio_Alexander02`): builds and publishes within a minute or two of a save |
 | Gallery: page, image pages, menu link only with content, phone and laptop widths | **Tested locally** (0.2.0) |
 | Gallery on the home page (0.4.0): ticked images in Order; first five when none ticked; "See the full gallery" card; no section without images; menu marks Gallery current on gallery pages | **Tested locally**, **on GitHub** and **in Pages CMS** (21 Nov): ticking and unticking images changes the section as described |
 | `.pages.yml` and content files parse; every content key has a form field | **Tested locally** (`dev/check_content.py`) |
@@ -56,7 +56,7 @@ Contents
 
 Student guides written alongside 0.2.0 (Claude Docs): *Your Portfolio, Search Engines and AI*; *How to Set Up Your Own Domain Name* (Cloudflare); *Guidelines for Setting Up Your First Portfolio*.
 
-A clickable preview of the sample site exists as a private Claude artifact ("DrPhill – preview"). It was built with relative links so it works as an artifact; that variation is not part of the source.
+A clickable preview of the sample site exists as a private Claude artifact ("Alexander – preview"). It was built with relative links so it works as an artifact; that variation is not part of the source.
 
 ---
 
@@ -128,7 +128,7 @@ GitHub Pages lets browsers keep a copy of each page for up to ten minutes. Someo
 ## 3. File map
 
 ```
-DrPhill/                                  ← one repository per student (copied from the template)
+Alexander/                                  ← one repository per student (copied from the template)
 ├── README.md                             student-facing: how to edit, where content lives
 ├── CLAUDE.md                             instructions for Claude when maintaining the theme
 ├── hugo.toml                             site settings, image mounts, experience/education cascade
@@ -150,7 +150,7 @@ DrPhill/                                  ← one repository per student (copied
 │   ├── images/                           uploads (originals; only resized copies are published)
 │   └── files/                            résumé etc.
 │
-├── themes/DrPhill/                       ── DESIGN (the same for every student) ──
+├── themes/Alexander/                       ── DESIGN (the same for every student) ──
 │   ├── theme.toml, LICENSE               name, version, MIT licence (fonts excluded)
 │   ├── assets/css/
 │   │   ├── main.css                      all styles; numbered contents; settings in section 1
@@ -205,7 +205,7 @@ DrPhill/                                  ← one repository per student (copied
 
 ## 4. Content format (the contract between content and design)
 
-The design reads these files and fields. A future theme can replace `themes/DrPhill/` entirely; as long as it reads the same fields, no student content and no Pages CMS form has to change.
+The design reads these files and fields. A future theme can replace `themes/Alexander/` entirely; as long as it reads the same fields, no student content and no Pages CMS form has to change.
 
 ### `content/_index.md` (Profile form)
 
@@ -484,7 +484,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 
 ## 10. How to change things
 
-**Colours, sizes, spacing:** edit the custom properties in section 1 of `themes/DrPhill/assets/css/main.css`. Keep contrast at 4.5:1 or above for text.
+**Colours, sizes, spacing:** edit the custom properties in section 1 of `themes/Alexander/assets/css/main.css`. Keep contrast at 4.5:1 or above for text.
 
 **Which elements use the title typeface:** section 2 of `main.css`.
 
@@ -544,7 +544,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 4. Sticky header with name and expertise; section menu at the top (Menu button on phones); Education, Tools, About, Contact sections that appear only when filled in; LinkedIn button.
 5. Four self-hosted typefaces chosen in `data/style.yaml`.
 6. Stylesheet reorganised: numbered contents, settings as custom properties, class names matching templates, fallbacks documented.
-7. Named DrPhill; documentation, test and font scripts added.
+7. Named DrPhill (renamed Alexander in 0.6.1); documentation, test and font scripts added.
 
 19 November 2026 — version 0.2.0:
 1. Project layout depends on the number of projects (1: wide; 2: two side by side; 3: wide + two; 4 or more: wide + rows of three filling from the left). All projects appear on the home page; the "All projects →" link was removed.
@@ -559,7 +559,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 10. Visitor statistics: an Analytics choice in Profile (NONE, GoatCounter, Cloudflare Web Analytics) and a code field; README instructions for each.
 
 21 November 2026 — version 0.2.1:
-1. First end-to-end test in the demo repository `LeMasters/portfolio_DrPhill02`: Pages CMS saves (Profile, Projects, Tools, Appearance), an image upload and a new project all built and published. Uploads keep their original names in `static/images/`; new projects are named from their title (`last-of-the-big-projects.md`); a project without Order goes last.
+1. First end-to-end test in the demo repository `LeMasters/portfolio_Alexander02`: Pages CMS saves (Profile, Projects, Tools, Appearance), an image upload and a new project all built and published. Uploads keep their original names in `static/images/`; new projects are named from their title (`last-of-the-big-projects.md`); a project without Order goes last.
 2. Published image copies get readable names (`partials/img-name.html`): underscores for spaces, no hash codes.
 3. Projects form: Project description moved up, under Caption, with a hint.
 4. This guide: "What happens on each save, step by step" (section 2). README: refresh advice, image names, a short version of what happens on save.
@@ -602,14 +602,15 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 2. Briefs show no Sections (the form still offers them; the page ignores them). A brief keeps its image.
 3. Bottom block falls back to "Your Name" like the header (seen in the empty starter template).
 5. Bottom block small print: "© year name · Built Month Year", the month of the build (Hugo's `now` at build time, UTC); it changes on every publish, including rebuilds with no content change.
-6. Empty starter template: `DrPhill-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
+6. Renamed from DrPhill to Alexander: theme folder `themes/Alexander`, theme name, forms, docs, maintainer scripts. Snapshot files made before the rename keep their names (`DrPhill-0.4.0.zip`, `DrPhill-0.6.0.zip`); the demo repository keeps its name (`portfolio_DrPhill02`) until renamed on GitHub.
+7. Empty starter template: `Alexander-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
 Tested locally (project and brief pages with sections; `dev/check_site.py` passes).
 
 ---
 
 ## 13. Credits and licences
 
-- **Theme:** © 2026 Garrison LeMasters; MIT licence (`themes/DrPhill/LICENSE`).
-- **Fonts** (SIL Open Font License 1.1; licence files in `themes/DrPhill/static/fonts/<key>/OFL.txt`):
+- **Theme:** © 2026 Garrison LeMasters; MIT licence (`themes/Alexander/LICENSE`).
+- **Fonts** (SIL Open Font License 1.1; licence files in `themes/Alexander/static/fonts/<key>/OFL.txt`):
   Atkinson Hyperlegible Next (Braille Institute of America), Inter (Rasmus Andersson / The Inter Project Authors), Source Serif 4 (Adobe; Frank Grießhammer), Fraunces (Undercase Type / The Fraunces Project Authors). Files from Fontsource (fontsource/font-files).
 - **Tools:** Hugo (Apache 2.0), Pages CMS (MIT), GitHub Actions and Pages.

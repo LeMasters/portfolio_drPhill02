@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Regenerate themes/DrPhill/static/fonts/ and themes/DrPhill/assets/css/fonts.css
+Regenerate themes/Alexander/static/fonts/ and themes/Alexander/assets/css/fonts.css
 from the Fontsource font files (github.com/fontsource/font-files).
 
 1. Fetch only the needed folders (run from any scratch directory):
@@ -8,7 +8,7 @@ from the Fontsource font files (github.com/fontsource/font-files).
      cd ff && git sparse-checkout set --no-cone \
        'fonts/variable/<package>/files/*latin-*' 'fonts/variable/<package>/*.css' 'fonts/variable/<package>/LICENSE'
      (repeat the three patterns for each package in FAMILIES below)
-2. Run:  python3 -I dev/build_fonts.py <path to ff/fonts/variable> <path to themes/DrPhill>
+2. Run:  python3 -I dev/build_fonts.py <path to ff/fonts/variable> <path to themes/Alexander>
 
 To add or swap a typeface: edit FAMILIES (Fontsource package name → short key used in
 data/style.yaml), rerun, then add the key to section 1/2 of main.css, the $fonts map in

@@ -1,4 +1,4 @@
-# DrPhill — student portfolio
+# Alexander — student portfolio
 
 A plain, fast portfolio site. You edit it in **Pages CMS**; **GitHub** builds it with Hugo and publishes it at `https://your-username.github.io/your-repository/`.
 
@@ -128,7 +128,7 @@ These are plain Markdown and YAML files. To move your portfolio somewhere else, 
 
 | Path | What it is |
 |---|---|
-| `themes/DrPhill/` | The design (templates, styles, fonts). The same for every student. |
+| `themes/Alexander/` | The design (templates, styles, fonts). The same for every student. |
 | `hugo.toml` | Site settings |
 | `.pages.yml` | The Pages CMS forms |
 | `.github/workflows/hugo.yml` | Builds and publishes the site on every save |
@@ -146,8 +146,8 @@ Four open-source typefaces are included and served from your own site (no reques
 | Source Serif 4 | Frank Grießhammer / Adobe | Serif, classic |
 | Fraunces (default for titles) | Undercase Type | Serif, expressive |
 
-All four are licensed under the SIL Open Font License 1.1; each licence is in its folder under `themes/DrPhill/static/fonts/`.
+All four are licensed under the SIL Open Font License 1.1; each licence is in its folder under `themes/Alexander/static/fonts/`.
 
 ## Credits
 
-DrPhill theme © 2026 Garrison LeMasters, Miami University (Department of Emerging Technology in Business and Design). MIT licence (`themes/DrPhill/LICENSE`). Built with [Hugo](https://gohugo.io) and [Pages CMS](https://pagescms.org); fonts via [Fontsource](https://fontsource.org).
+Alexander theme © 2026 Garrison LeMasters, Miami University (Department of Emerging Technology in Business and Design). MIT licence (`themes/Alexander/LICENSE`). Built with [Hugo](https://gohugo.io) and [Pages CMS](https://pagescms.org); fonts via [Fontsource](https://fontsource.org).

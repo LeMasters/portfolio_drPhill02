@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Browser checks for a built DrPhill site (headless Chrome via Playwright).
+Browser checks for a built Alexander site (headless Chrome via Playwright).
 
 Usage:
     hugo --minify --baseURL "http://localhost:8765/TestRepo/" -d /tmp/srv/TestRepo

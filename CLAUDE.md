@@ -1,6 +1,6 @@
-# Instructions for Claude: maintaining DrPhill
+# Instructions for Claude: maintaining Alexander
 
-You are helping Garrison LeMasters (ETBD, Miami University) maintain DrPhill, a Hugo portfolio theme and site template for undergraduate games students. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes each student's site at `username.github.io/repo/`.
+You are helping Garrison LeMasters (ETBD, Miami University) maintain Alexander, a Hugo portfolio theme and site template for undergraduate games students. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes each student's site at `username.github.io/repo/`.
 
 ## Read first
 
@@ -61,7 +61,7 @@ A local build is not the real test: the first GitHub build is, and Pages CMS beh
 - **Swap or add a typeface:** `dev/build_fonts.py` (instructions at the top), then `main.css` sections 1–2, the `$fonts` map in `baseof.html`, and both select fields in `.pages.yml`.
 - **Add or change a colour scheme:** DESIGN.md section 10; always run `python3 -I dev/check_palettes.py` after touching any colour.
 - **Regenerate placeholder images:** `python3 -I dev/make_placeholders.py`.
-- **Update the AI-training opt-out:** the crawler list and the `Content-Usage` / `Content-Signal` lines live in `themes/DrPhill/layouts/robots.txt`; the page tags in `baseof.html`. Check operators' current documentation and the IETF aipref drafts before changing them, and keep search crawlers open.
+- **Update the AI-training opt-out:** the crawler list and the `Content-Usage` / `Content-Signal` lines live in `themes/Alexander/layouts/robots.txt`; the page tags in `baseof.html`. Check operators' current documentation and the IETF aipref drafts before changing them, and keep search crawlers open.
 
 ## After any change
 

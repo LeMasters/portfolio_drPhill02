@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Check every colour scheme in themes/DrPhill/assets/css/main.css against WCAG contrast.
+Check every colour scheme in themes/Alexander/assets/css/main.css against WCAG contrast.
 
 Reads the colours straight from the stylesheet: the default scheme ("ink") from the
 --color-* custom properties in :root, the others from the [data-palette="…"] blocks.
@@ -9,7 +9,7 @@ Exit status 1 if any pairing falls short.
 """
 import re, sys
 
-CSS = "themes/DrPhill/assets/css/main.css"
+CSS = "themes/Alexander/assets/css/main.css"
 css = re.sub(r"/\*.*?\*/", "", open(CSS, encoding="utf-8").read(), flags=re.S)
 
 def colours(block):

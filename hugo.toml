@@ -2,7 +2,7 @@
 # baseURL is replaced at build time by the GitHub Actions workflow.
 baseURL = "https://example.github.io/portfolio/"
 languageCode = "en-us"
-theme = "DrPhill"
+theme = "Alexander"
 
 # Keep the site to the pages we design: no tag/category pages, no RSS.
 disableKinds = ["taxonomy", "term", "RSS"]
