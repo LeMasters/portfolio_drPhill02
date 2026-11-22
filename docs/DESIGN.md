@@ -589,6 +589,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 15. Case-study intro box: label, title, caption and description together in a box outlined (2 px) in the colour scheme's accent, as wide as its content. Pictures in Sections show the pointer cursor, not the magnifier (they open the whole section). Tested locally at 1440 and 390 px.
 16. Case study: the "Case study" label moved above the box, a step larger (`--text-sm`); the title repeated between the main image and the Sections (`.study__retitle`, `aria-hidden`, only when Sections are shown). Tested locally.
 17. Form labels "Image description" (Projects, Gallery) and "Picture description" (Sections) renamed "Alt text", with one shared explanation; README and the student guides follow.
+18. Projects form reordered to follow the page: title, kind, caption, description, image, alt text, year, role, links, tags, then Sections, then Order.
 
 ---
 

@@ -116,6 +116,39 @@ content:
         label: Project description
         type: rich-text
         description: "The text of the project's own page. For a case study, keep this to a short opening and tell the story in Sections, below. For a brief, two or three sentences are enough."
+      - name: image
+        label: Image
+        type: image
+        description: 1800 × 1200 (3:2), under about 400 KB. The wide feature crops the top and bottom.
+        options:
+          media: images
+      - name: alt
+        label: Alt text
+        type: string
+        description: "Alt text: one sentence saying what the image shows, read aloud to people who cannot see it (and used by search engines)."
+      - name: year
+        label: Year
+        type: string
+      - name: role
+        label: Your role
+        type: string
+      - name: links
+        label: Links
+        type: object
+        list: true
+        description: e.g. itch.io, Steam, a trailer.
+        fields:
+          - name: label
+            label: Link text
+            type: string
+            description: e.g. "Play it on itch.io". Defaults to "View project".
+          - name: url
+            label: Address
+            type: string
+      - name: tags
+        label: Tags
+        type: string
+        list: true
       - name: sections
         label: Sections (picture and text)
         type: object
@@ -155,39 +188,6 @@ content:
         label: Order
         type: number
         description: 1 appears first (the wide feature, unless you have exactly two projects); the rest follow in rows, in this order.
-      - name: image
-        label: Image
-        type: image
-        description: 1800 × 1200 (3:2), under about 400 KB. The wide feature crops the top and bottom.
-        options:
-          media: images
-      - name: alt
-        label: Alt text
-        type: string
-        description: "Alt text: one sentence saying what the image shows, read aloud to people who cannot see it (and used by search engines)."
-      - name: year
-        label: Year
-        type: string
-      - name: role
-        label: Your role
-        type: string
-      - name: links
-        label: Links
-        type: object
-        list: true
-        description: e.g. itch.io, Steam, a trailer.
-        fields:
-          - name: label
-            label: Link text
-            type: string
-            description: e.g. "Play it on itch.io". Defaults to "View project".
-          - name: url
-            label: Address
-            type: string
-      - name: tags
-        label: Tags
-        type: string
-        list: true
 
   - name: gallery
     label: Gallery
