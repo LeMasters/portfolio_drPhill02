@@ -634,6 +634,7 @@ Tested locally (project and brief pages with sections; `dev/check_site.py` passe
 2. README: the Projects form's field order, what each kind's page shows, and Sections as the way to tell a case study.
 3. Education form example: "B.S., Games + Simulation (expected)", matching the sample content (degree title still to verify).
 4. CSS: the Section dialog's backdrop colour moved into section 1 as `--overlay-backdrop`. No visible change.
+5. CSS: the remaining typography values moved into section 1 as custom properties (`--tracking-label`, `--tracking-caps`, `--tracking-caps-wide`, `--text-menu`, `--text-card-sub-3`, `--text-icon`, `--leading-none`, `--leading-lead`, `--leading-relaxed`); the unused `.visually-hidden` utility and its section removed, so the stylesheet now has 16 numbered sections. Screenshots before and after are pixel-identical (home, case study and Gallery pages at 1440 and 390 px; phone menu and section dialog open).
 
 ---
 
