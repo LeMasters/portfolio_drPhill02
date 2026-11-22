@@ -951,6 +951,29 @@ a {
   margin: 0 0 var(--space-2xs);
 }
 
+/* Case study: label, title, caption and description in a box outlined in the
+   colour scheme's accent, as wide as its content (the description keeps its
+   40rem measure). */
+.study__intro {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  padding: var(--space-m) clamp(1rem, 3vw, 2rem) var(--space-m);
+  border: 2px solid var(--color-accent);
+}
+
+.study__intro .study__body {
+  margin-block-start: var(--space-s);
+}
+
+.study__intro .study__body > :first-child {
+  margin-block-start: 0;
+}
+
+.study__intro .study__body > :last-child {
+  margin-block-end: 0;
+}
+
 /* Case study: one reading column. The description directly under the caption,
    then the at-a-glance panel (facts in a row, links, contents list), then the
    image, then the Sections. */
