@@ -1149,7 +1149,7 @@ a {
    a click on the backdrop, which closes it (script in baseof.html). */
 .sections__open {
   display: block;
-  cursor: zoom-in;
+  cursor: pointer;
 }
 
 .sections__open:focus-visible {
