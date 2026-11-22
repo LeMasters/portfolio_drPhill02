@@ -172,7 +172,8 @@ DrPhill/                                  ← one repository per student (copied
 │           ├── name-lines.html           splits the name into two even rows for the header
 │           ├── nav.html                  section menu (row on wide screens, Menu button on narrow)
 │           ├── project-card.html         image + title + caption card
-│           ├── project-sections.html     a project's Sections: picture and text rows, alternating sides ("Case study" label)
+│           ├── project-sections.html     a project's Sections: picture and text rows, alternating sides; each opens in a dialog
+│           ├── img-full.html             address of an image's largest published copy ("Case study" label)
 │           ├── project-kind.html         a project's kind: case-study, project or brief
 │           ├── project-groups.html       projects grouped by kind, in home-page order
 │           ├── gallery-items.html        gallery entries that have an image, in order
@@ -584,6 +585,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 11. Sections pictures cropped to their text's height on wide screens (option B of three discussed: length tiers, crop-to-height, balanced estimate): the row is as tall as the text or `--section-image-min` (14 rem), the picture fills it with `object-fit: cover` from the centre; whole, above the text, on narrow screens. Tested locally.
 12. Sections pictures shrink to fit the text's height whole (`object-fit: contain`), held against the text side and the top, instead of being cropped (item 11). Leaves empty space beside a picture narrower than its column. Tested locally.
 13. A rule between Sections: `.sections__row + .sections__row` gets a top border, centred in the space between rows. Empty sections are never written, so rules cannot stack. Tested locally.
+14. Opening a section: each Sections picture is a link. With script it opens the section in a native `<dialog>` (heading large, picture whole up to 60% of the screen's height, full text; Escape, the close button or a click on the backdrop closes it; focus moves into the dialog and back). Without script the link opens the picture's largest published copy (`partials/img-full.html`). `dev/check_site.py` now counts an `aria-label` as a link's name. Tested locally at 1440 and 390 px, with and without script. **Not yet tested in Safari or Firefox.**
 
 ---
 

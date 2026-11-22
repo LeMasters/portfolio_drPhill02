@@ -110,8 +110,17 @@
   {{ partial "bottom-block.html" . }}
   {{- /* Small enhancements; the page works without them.
          1. Record the sticky header's height, so menu jumps land just below it.
-         2. Phone menu: close after a choice, on Escape, or on a tap elsewhere. */}}
+         2. Phone menu: close after a choice, on Escape, or on a tap elsewhere.
+         3. Sections pictures: open their section in its <dialog> (without script
+            the link opens the picture itself); a click on the backdrop closes it.
+            The dialog's own Escape key and close button work natively. */}}
   <script>
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-dialog]");
+      const dialog = link && document.getElementById(link.dataset.dialog);
+      if (dialog && dialog.showModal) { e.preventDefault(); dialog.showModal(); return; }
+      if (e.target.matches && e.target.matches("dialog[open]")) e.target.close();
+    });
     (() => {
       const header = document.querySelector(".masthead");
       if (header && "ResizeObserver" in window) {

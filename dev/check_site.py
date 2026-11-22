@@ -15,7 +15,7 @@ Checks, at phone (390x844), tablet (700x900) and laptop (1440x820):
   - phone menu closes after a choice, on Escape, and on a tap elsewhere
 And once (home, All projects and Gallery pages): console errors, landmarks, heading
 order, images with alt and width/height, empty links (a link named only by its
-image's alt text counts as named), duplicate ids, keyboard order, fonts downloaded.
+image's alt text, or by aria-label, counts as named), duplicate ids, keyboard order, fonts downloaded.
 Writes screenshots to ./shots/.
 """
 import os, sys
@@ -58,7 +58,7 @@ with sync_playwright() as p:
           headings: [...document.querySelectorAll('h1,h2,h3')].map(h => +h.tagName[1]),
           noAlt: [...document.images].filter(i => !i.hasAttribute('alt')).length,
           noDims: [...document.images].filter(i => !i.getAttribute('width') && !i.src.endsWith('.gif') && !i.src.endsWith('.svg')).length,
-          emptyLinks: [...document.querySelectorAll('a')].filter(a => !a.textContent.trim() && ![...a.querySelectorAll('img')].some(i => i.alt.trim())).length,
+          emptyLinks: [...document.querySelectorAll('a')].filter(a => !a.textContent.trim() && !(a.getAttribute('aria-label') || '').trim() && ![...a.querySelectorAll('img')].some(i => i.alt.trim())).length,
           dupIds: (() => { const s = [...document.querySelectorAll('[id]')].map(e => e.id); return s.length - new Set(s).size })(),
           mains: document.querySelectorAll('main').length })""")
         jumps = any(b2 - a2 > 1 for a2, b2 in zip(r["headings"], r["headings"][1:]))
