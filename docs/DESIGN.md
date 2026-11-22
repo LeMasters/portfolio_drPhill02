@@ -1,6 +1,6 @@
 # DrPhill — design and maintenance guide
 
-Version 0.6.0 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.6.1 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 DrPhill is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -322,9 +322,9 @@ A list of `{name, note}`. Items without a `name` are skipped.
 **One source of truth for sections.** `partials/sections.html` returns the list of sections that have content, in menu order: Projects, Gallery, Experience, Education, Tools, About, Contact, then LinkedIn and GitHub (outside links, not sections). `nav.html` draws a button for each; `index.html` draws a section for each. A menu button can therefore never point to an empty or missing section. The site is rebuilt on every save, so the menu always matches the content.
 
 **Project page** (`projects/single.html`), by kind. All three: header (name links home; menu links go to `home#section`), previous/next project in home-page order (case studies, projects, briefs), bottom block.
-- **Project**: title, year · role, caption, full image (uncropped), description, link buttons, tags.
+- **Project** (since 0.6.1): title, year · role, caption and description in the outlined box (as a case study's, without its label); link buttons, tags; full image (uncropped); the Sections. No contents list or repeated title.
 - **Case study** (one reading column, 40 rem, since 0.5.0): "Case study" label; title, caption and the description (set slightly larger), together in a box outlined in the accent colour; then the at-a-glance panel (role, year and tags in a row, link buttons, and a numbered contents list when the description's second-level headings and the Sections' headings number three or more); then the full image, if any; then the title again (when Sections are shown); then the Sections. Until 0.5.0 the panel sat in a 13 rem column at the left of the description, sticky on wide screens; changed at Garrison's request so the description follows the caption.
-- **Brief**: as a project, in a narrower left-aligned column (44 rem) with a smaller title and image.
+- **Brief**: a narrower left-aligned column (44 rem), smaller title: title, year · role, caption, image, description, link buttons, tags. No outlined box and, since 0.6.1, no Sections.
 
 **Gallery page** (`gallery/list.html`, at `/gallery/`): header (menu item "Gallery", which leads to the home-page section, marked as the current place), heading, optional intro text (body of `content/gallery/_index.md`, if one is added), square thumbnails in a grid that fits as many 10 rem columns as the width allows (two on a phone, six on a laptop). Each thumbnail links to its image page.
 
@@ -596,6 +596,13 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 10. Form labels "Image description" (Projects, Gallery) and "Picture description" (Sections) renamed "Alt text", with one shared explanation; README and the student guides follow.
 11. Projects form reordered to follow the page: title, kind, caption, description, image, alt text, year, role, links, tags, then Sections, then Order.
 12. Closing version of this series. Snapshot: `DrPhill-0.6.0.zip` (template with sample content); the two-part text source in the Project regenerated.
+
+22 November 2026 — version 0.6.1:
+1. Project pages (kind "project") take a lighter case-study layout: title, year · role, caption and description in the outlined box; link buttons and tags; the image; the Sections. No label, contents list or repeated title.
+2. Briefs show no Sections (the form still offers them; the page ignores them). A brief keeps its image.
+3. Bottom block falls back to "Your Name" like the header (seen in the empty starter template).
+4. Empty starter template: `DrPhill-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
+Tested locally (project and brief pages with sections; `dev/check_site.py` passes).
 
 ---
 

@@ -164,7 +164,7 @@ content:
             - heading: Iteration
             - heading: Outcome
             - heading: Reflection
-        description: "Each section is a picture beside a block of text, shown after the description; the picture swaps sides with every section, and on phones they stack. A new project starts with seven suggested headings. Fill in the ones that fit, in any order (drag to reorder); rename, repeat or delete them. A section with neither a picture nor text doesn't appear."
+        description: "Each section is a picture beside a block of text, shown after the description; the picture swaps sides with every section, and on phones they stack. A new project starts with seven suggested headings. Fill in the ones that fit, in any order (drag to reorder); rename, repeat or delete them. A section with neither a picture nor text doesn't appear. Case studies and projects only: a brief's page doesn't show Sections."
         fields:
           - name: heading
             label: Heading
