@@ -575,6 +575,12 @@ a {
   block-size: min(50cqi, 58svh);
 }
 
+/* A wide card whose image is squarer than 1.4:1 (set in project-card.html): the
+   whole image, centred on the tinted placeholder band, instead of a crop. */
+.card__frame--whole img {
+  object-fit: contain;
+}
+
 /* The three smaller projects: uniform 3:2 frames. */
 .card--small .card__frame {
   aspect-ratio: 3 / 2;

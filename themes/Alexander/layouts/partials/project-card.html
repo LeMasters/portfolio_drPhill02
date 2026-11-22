@@ -20,8 +20,24 @@
         "(min-width: 74rem) 34rem, (min-width: 22rem) 46vw, 94vw"
         "(min-width: 74rem) 23rem, (min-width: 30rem) 31vw, 94vw" -}}
 {{- end -}}
+{{- /* Wide cards: an image squarer than 1.4:1 (4:3, square, portrait) is shown whole
+       on a tinted band instead of being cropped to the wide frame (about 2:1 to 2.6:1),
+       which would keep only a third to a half of its height. 3:2 and wider fill it. */ -}}
+{{- $whole := false -}}
+{{- if $wide -}}
+  {{- with $p.Params.image -}}
+    {{- $src := strings.TrimPrefix "/" (trim (string .) " ") -}}
+    {{- with resources.Get $src -}}
+      {{- if and (eq .ResourceType "image") (in (slice "jpeg" "png" "webp") .MediaType.SubType) -}}
+        {{- $i := . -}}
+        {{- if eq .MediaType.SubType "jpeg" }}{{ $i = .Filter images.AutoOrient }}{{ end -}}
+        {{- if lt (div (float $i.Width) $i.Height) 1.4 }}{{ $whole = true }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 <article class="card card--{{ .size }}">
-  <div class="card__frame">
+  <div class="card__frame{{ if $whole }} card__frame--whole{{ end }}">
     {{- with $p.Params.image }}
     {{ partial "img.html" (dict
         "src" .

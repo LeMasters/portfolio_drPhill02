@@ -1,6 +1,6 @@
 # Alexander — design and maintenance guide
 
-Version 0.6.2 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
+Version 0.6.3 · snapshot of 22 November 2026 · Garrison LeMasters (ETBD, Miami University), with Claude
 
 Alexander is a Hugo theme and site template for undergraduate games students' portfolios. Students edit through Pages CMS; GitHub Actions builds with Hugo; GitHub Pages publishes. This guide records how it works, why it is built this way, what has and has not been tested, and how to change it.
 
@@ -51,6 +51,7 @@ Contents
 | Case-study page (0.6.0): one column; label above an outlined box holding title, caption and description; facts and contents; image; title repeated before the Sections | **Tested locally** (1440 and 390 px) and **on GitHub** (22 Nov); looked at by Garrison on the live site |
 | Form order and labels (0.6.0): Profile (About and Résumé under Area of expertise; "Custom Links"); Projects in page order; "Alt text" | **On GitHub** (22 Nov); `dev/check_content.py` passes. Profile order checked by Garrison in Pages CMS |
 | Gallery titles (0.6.2): visible title under each thumbnail, inside the link; link name = alt text, then title; empty alt read as the title once; titles clamp to two lines; "See the full gallery" tile square and level | **Tested locally** (390 and 1440 px; a build with every alt removed) and **on GitHub** (22 Nov build). Looked at on the live site: **not yet** |
+| Wide cards (0.6.3): an image squarer than 1.4:1 shown whole on a tinted band; 3:2 and wider still fill the frame; form hint and README describe the crop | **Tested locally** (portrait sample at 390 and 1440 px; a build with a 3:2 image keeps the crop; `dev/check_site.py` passes) and **on GitHub** (22 Nov build). Looked at on the live site: **not yet** |
 | Other browsers (Safari, Firefox), real phones | **Not yet tested** |
 
 **0.5.0 (21 Nov)** added project kinds, larger section labels, picture-and-text Sections and an eighth form, Analytics. **0.6.0 (22 Nov) closes this series**: the case-study page reworked in one column (outlined intro box, the title repeated before the Sections); Sections pictures shrunk whole to their text's height, rules between sections, and a click opening each section in a dialog; seven suggested section headings; forms reordered to follow the page; "Alt text" labels. Snapshot: `DrPhill-0.6.0.zip` (template with sample content). Carried forward: the Experience dropdown's position in the form and a workaround for its behaviour (section 11); the Analytics form and the suggested headings confirmed in Pages CMS; real phones, Safari and Firefox (the section dialog included); neutral sample content and the student-path rehearsal before the template goes to students. Open: whether to limit the number of case studies; a focal-point choice for cropped images (section 11).
@@ -229,7 +230,7 @@ The design reads these files and fields. A future theme can replace `themes/Alex
 | `projectKind` | `case-study`, `project` or `brief` | Form label "Kind"; default `project` (also when empty or unrecognised). Chooses the home-page card and the page layout (section 5). Not `kind`: Hugo reserves that key |
 | `caption` | string | One line under the card image and page title |
 | `weight` | number | Order, 1 first. Layout by count: see section 5 |
-| `image` | path | `images/…`; 1800 × 1200 (3:2) recommended |
+| `image` | path | `images/…`; 1800 × 1200 (3:2) recommended. On a wide card an image squarer than 1.4:1 is shown whole on a tinted band (0.6.3); 3:2 and wider are cropped to the frame |
 | `alt` | string | Alt text, for screen readers (form label "Alt text") |
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
@@ -377,6 +378,9 @@ Until 0.4.0 every menu item scrolled within the home page except Gallery, which 
 **Gallery thumbnails show their titles** (0.6.2).
 Until 0.6.2 a thumbnail link held only the image, so its name was the alt text: a screen reader announced one name in the grid ("Here it is! This is it") and the page that opened had another ("Gallery image 1"), and sighted visitors saw no title until they clicked. Now the title appears under each thumbnail inside the link, and the image keeps its alt text, so the link reads the description, then the title. The grid, the image's page and previous/next links all carry the same visible name, and no field was added (title is required; alt text was already asked for). The title-as-alt fallback is dropped in the grids, so an image without alt text is read by its title once, not twice. Titles are limited to two lines. Set aside: the title as alt text with nothing visible (smallest change, but sighted visitors still see no names); a visible title with empty alt (consistent, but the description is not heard in the grid); a hover-only title (unreliable on touch screens and keyboards).
 
+**Wide cards show squarer images whole** (0.6.3).
+The wide frame is 2:1 but never taller than 58% of the screen, so on a 1440 × 820 laptop it is about 2.6:1: a recommended 3:2 image keeps about 58% of its height there, and a portrait (the sample's 511 × 607 Mondoshawan) about a third, enough to lose a game's HUD or dialogue. Now `project-card.html` reads each wide card's image (turned upright first) and, if it is squarer than 1.4:1 (4:3, square, portrait), marks the frame `card__frame--whole`; the CSS then shows the whole image (`object-fit: contain`) centred on the tinted placeholder band. 3:2 and wider images still fill the frame, and the Projects form's image hint and the README now say how much of a 3:2 image the wide card shows and where to keep important detail. No new field; the project page already showed the whole image. Small cards (3:2 frames) are unchanged. Set aside: a separate wide cover image (control, but a second image to make for every project, and still trimmed as the frame's shape varies with the screen); a top/middle/bottom crop anchor (a small extra field; kept in reserve); a fixed 2:1 frame (predictable, but the feature caption falls below a laptop's fold).
+
 **Hugo makes the image sizes.**
 Students upload originals, often several megabytes from a phone or camera. At build time Hugo makes WebP copies at up to five widths (never larger than the original), turns phone photos upright, and the page tells each browser which to download. Originals are not published (`excludeFiles` in `hugo.toml`). Set aside: asking students to export at the right size (they won't, reliably), and an image CDN (an outside service).
 
@@ -523,6 +527,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 - **Very long names at tablet widths:** with a long two-row name (e.g. "Alexandria / Montgomery-Fitzgerald") at 700–900 px, the menu wraps into a narrow column of up to six lines beside it. Nothing overlaps or overflows.
 - **Phones held upright:** rows of three stack into one column; pairs stay side by side (each about 170 px wide on a 390 px phone). Alternatives considered for threes: three tiny columns, or a sideways-scrolling strip.
 - **Gallery entries without an image** are hidden from the Gallery page but Hugo still builds a page for them (unlinked). The Pages CMS form marks the image as required, so this should only happen through direct file edits.
+- **Wide cards crop 3:2 and wider images** to the frame (about 2:1 to 2.6:1, by screen); only squarer images are shown whole (0.6.3). If students still lose the tops or bottoms of shots, a top/middle/bottom crop anchor is the next step (one small optional field).
 - **Gallery thumbnails crop to squares**, so a panorama shows only its middle. A student can choose what is in the middle; a focal-point field would need one more form field.
 - **Many projects:** every project appears on the home page, so a student with twelve projects gets four rows. A cap (e.g. show the first seven, link to All projects for the rest) is a one-line change if wanted.
 - **Number of case studies:** not limited. Each is a full-width card, so three or more push ordinary projects far down the page. A limit (e.g. the first two case studies wide, the rest shown as projects) is open.
@@ -614,6 +619,10 @@ Tested locally (project and brief pages with sections; `dev/check_site.py` passe
 1. Gallery thumbnails (home-page section and Gallery page) show the work's title under the image, inside the link; the link reads the alt text, then the title. The title-as-alt fallback is dropped in the grids. Titles clamp to two lines. The "See the full gallery" tile stays square, level with the thumbnails. Raised by an outside review of the gallery's link names.
 2. Gallery form: the Title hint says it shows under the thumbnail; README follows.
 3. DESIGN.md: the demo repository's name corrected to `portfolio_DrPhill02` (the 0.6.1 rename had changed it by mistake in two places).
+
+22 November 2026 — version 0.6.3:
+1. Wide project cards show an image squarer than 1.4:1 (4:3, square, portrait) whole, centred on the tinted placeholder band (`card__frame--whole`), instead of cropping it to the 2:1–2.6:1 frame. 3:2 and wider images fill the frame as before. Raised by an outside review (the sample's portrait image kept about a third of its height).
+2. Projects form image hint and README: the wide card shows about the middle 60% of a 3:2 image's height; keep titles, HUD and faces away from the top and bottom edges; squarer images are shown whole; the project page always shows the whole image.
 
 ---
 
