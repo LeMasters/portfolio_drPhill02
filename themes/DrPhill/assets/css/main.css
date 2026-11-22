@@ -951,6 +951,27 @@ a {
   margin: 0 0 var(--space-2xs);
 }
 
+/* Case study: the label sits above the outlined box, a step larger. */
+.study__kind {
+  margin-block-end: var(--space-xs);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+}
+
+/* The title again, between the main image and the Sections. */
+.study__retitle {
+  margin: var(--space-xl) 0 0;
+  font-family: var(--font-title);
+  font-size: var(--title-sm);
+  font-weight: var(--weight-heavy);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+}
+
+.study__retitle + .sections {
+  margin-block-start: var(--space-m);
+}
+
 /* Case study: label, title, caption and description in a box outlined in the
    colour scheme's accent, as wide as its content (the description keeps its
    40rem measure). */
