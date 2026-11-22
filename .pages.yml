@@ -302,7 +302,7 @@ content:
         label: Degree or certificate
         type: string
         required: true
-        description: e.g. "B.A., Games + Simulation (expected)". Delete every entry to hide the Education section.
+        description: e.g. "B.S., Games + Simulation (expected)". Delete every entry to hide the Education section.
       - name: school
         label: School
         type: string

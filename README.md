@@ -11,7 +11,7 @@ Open [app.pagescms.org](https://app.pagescms.org), choose this repository, and u
 | Form | What it holds | Leave it empty and… |
 |---|---|---|
 | **Profile** | Your name, area of expertise, your About paragraph, résumé (PDF), email, LinkedIn and GitHub addresses, and Custom Links (your other sites) | …the About section, Contact section, LinkedIn button or GitHub button disappears |
-| **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, sections (case studies and projects only: a picture beside text, swapping sides on each row; a new project starts with seven suggested headings, Problem to Reflection, which you fill, reorder, rename or delete), order, image, year, role, links, tags | …there are no projects on the page |
+| **Projects** | One entry per project: title, kind (case study, project or brief), caption, description, image and its alt text, year, role, links, tags, sections (case studies and projects only: a picture beside text, swapping sides on each row; a new project starts with seven suggested headings, Problem to Reflection, which you fill, reorder, rename or delete), order | …there are no projects on the page |
 | **Gallery** | One entry per image: title, image, whether to show it on the home page, alt text, order, caption | …the Gallery section, the Gallery page and the menu link disappear |
 | **Experience** | One entry per job, internship or assistantship: role, organization (and its website), location, dates, order, what you did, and a related project chosen from a list of your projects | …the Experience section disappears |
 | **Education** | One entry per degree or certificate: degree, school, year, order, optional detail | …the Education section disappears |
@@ -37,11 +37,11 @@ Each project has a **Kind**:
 
 | Kind | On the home page | Its own page |
 |---|---|---|
-| **Case study** | A full-width card at the top, marked "Case study" | A long read: an at-a-glance panel (role, year, tags, links) beside your description, with a contents list when you use three or more headings |
-| **Project** (the usual choice) | A card, laid out as below | Title, image, description, links, tags |
-| **Brief** | One line in a list at the end of Projects | A short page |
+| **Case study** | A full-width card at the top, marked "Case study" | A long read: your title, caption and description in an outlined box; role, year, tags and links, with a contents list when you use three or more headings; the image; then your Sections |
+| **Project** (the usual choice) | A card, laid out as below | Title, caption and description in an outlined box; links and tags; the image; then your Sections |
+| **Brief** | One line in a list at the end of Projects | A short page: title, image, description, links, tags (no Sections) |
 
-For a case study, use headings in the description to tell the story, for example: *The problem · My role · Process · What changed along the way · Results · What I learned*. You can change a project's kind at any time; nothing you've written is lost.
+For a case study, keep the description to a short opening and tell the story in **Sections**: each is a picture beside a paragraph or two. A new project starts with seven suggested headings (*Problem · My role · Research · Prototype · Iteration · Outcome · Reflection*); fill the ones that fit and rename, reorder or delete the rest. A section with neither picture nor text doesn't appear. You can change a project's kind at any time; nothing you've written is lost.
 
 Within each kind, projects appear in **Order** (1 first). Without any case studies, the layout adjusts to how many projects you have:
 
