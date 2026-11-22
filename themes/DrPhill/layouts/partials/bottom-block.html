@@ -3,9 +3,10 @@
   repeat of the contact links, so a visitor who scrolled to the end can reach out.
 */ -}}
 {{- $home := site.Home -}}
+{{- $name := $home.Params.name | default "Your Name" -}}
 <footer class="bottom-block">
   <div class="wrap">
-    <p class="bottom-block__name">{{ if .IsHome }}{{ $home.Params.name }}{{ else }}<a href="{{ $home.RelPermalink }}">{{ $home.Params.name }}</a>{{ end }}</p>
+    <p class="bottom-block__name">{{ if .IsHome }}{{ $name }}{{ else }}<a href="{{ $home.RelPermalink }}">{{ $name }}</a>{{ end }}</p>
     {{- with $home.Params.expertise }}<p class="bottom-block__expertise">{{ . }}</p>{{ end }}
 
     {{- $links := where ($home.Params.links | default slice) "url" "!=" "" -}}
@@ -18,6 +19,6 @@
       {{- with $home.Params.resume }}<li><a href="{{ partial "url.html" . }}">Résumé (PDF)</a></li>{{ end }}
     </ul>
     {{- end }}
-    <p class="bottom-block__small"><small>© {{ now.Year }} {{ $home.Params.name }}</small></p>
+    <p class="bottom-block__small"><small>© {{ now.Year }} {{ $name }}</small></p>
   </div>
 </footer>
