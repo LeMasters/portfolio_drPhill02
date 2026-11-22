@@ -583,6 +583,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 10. Case-study page in one column: description directly under the caption, then the at-a-glance panel and contents list, then the image (previously the panel sat beside the description). Tested locally (1440 and 390 px; `dev/check_site.py` passes).
 11. Sections pictures cropped to their text's height on wide screens (option B of three discussed: length tiers, crop-to-height, balanced estimate): the row is as tall as the text or `--section-image-min` (14 rem), the picture fills it with `object-fit: cover` from the centre; whole, above the text, on narrow screens. Tested locally.
 12. Sections pictures shrink to fit the text's height whole (`object-fit: contain`), held against the text side and the top, instead of being cropped (item 11). Leaves empty space beside a picture narrower than its column. Tested locally.
+13. A rule between Sections: `.sections__row + .sections__row` gets a top border, centred in the space between rows. Empty sections are never written, so rules cannot stack. Tested locally.
 
 ---
 

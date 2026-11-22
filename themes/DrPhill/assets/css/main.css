@@ -1053,6 +1053,14 @@ a {
   align-items: center;
 }
 
+/* A rule between sections that are shown: each section after another gets a line
+   above it, centred in the space between. Empty sections are never written
+   (project-sections.html), so rules cannot stack. */
+.sections__row + .sections__row {
+  padding-block-start: var(--space-xl);
+  border-block-start: 1px solid var(--color-rule);
+}
+
 .sections__image {
   margin: 0;
   background: var(--color-placeholder);
