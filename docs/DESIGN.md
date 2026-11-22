@@ -227,7 +227,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 | `caption` | string | One line under the card image and page title |
 | `weight` | number | Order, 1 first. Layout by count: see section 5 |
 | `image` | path | `images/…`; 1800 × 1200 (3:2) recommended |
-| `alt` | string | Image description for screen readers |
+| `alt` | string | Alt text, for screen readers (form label "Alt text") |
 | `year`, `role` | string | Shown under the project page title |
 | `links` | list of `{label, url}` | Buttons on the project page; label defaults to "View project" |
 | `tags` | list of strings | Shown on the project page |
@@ -240,7 +240,7 @@ The design reads these files and fields. A future theme can replace `themes/DrPh
 |---|---|---|
 | `title` | string, required | Image page title; previous/next link text |
 | `image` | path, required | `images/…`; any shape, up to 2000 px on the long side |
-| `alt` | string | Image description; also the thumbnail link's name |
+| `alt` | string | Alt text; also the thumbnail link's name |
 | `home` | boolean, default `false` | Show on the home page's Gallery section. If no entry has it, the first five (by Order) are shown |
 | `weight` | number | Order; 1 first |
 | *body* | Markdown | The caption under the image on its own page |
@@ -588,6 +588,7 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 14. Opening a section: each Sections picture is a link. With script it opens the section in a native `<dialog>` (heading large, picture whole up to 60% of the screen's height, full text; Escape, the close button or a click on the backdrop closes it; focus moves into the dialog and back). Without script the link opens the picture's largest published copy (`partials/img-full.html`). `dev/check_site.py` now counts an `aria-label` as a link's name. Tested locally at 1440 and 390 px, with and without script. **Not yet tested in Safari or Firefox.**
 15. Case-study intro box: label, title, caption and description together in a box outlined (2 px) in the colour scheme's accent, as wide as its content. Pictures in Sections show the pointer cursor, not the magnifier (they open the whole section). Tested locally at 1440 and 390 px.
 16. Case study: the "Case study" label moved above the box, a step larger (`--text-sm`); the title repeated between the main image and the Sections (`.study__retitle`, `aria-hidden`, only when Sections are shown). Tested locally.
+17. Form labels "Image description" (Projects, Gallery) and "Picture description" (Sections) renamed "Alt text", with one shared explanation; README and the student guides follow.
 
 ---
 

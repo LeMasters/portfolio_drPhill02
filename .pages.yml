@@ -144,9 +144,9 @@ content:
             options:
               media: images
           - name: alt
-            label: Picture description
+            label: Alt text
             type: string
-            description: For people who cannot see the picture.
+            description: "Alt text: one sentence saying what the image shows, read aloud to people who cannot see it (and used by search engines)."
           - name: text
             label: Text
             type: text
@@ -162,9 +162,9 @@ content:
         options:
           media: images
       - name: alt
-        label: Image description
+        label: Alt text
         type: string
-        description: For people who cannot see the image.
+        description: "Alt text: one sentence saying what the image shows, read aloud to people who cannot see it (and used by search engines)."
       - name: year
         label: Year
         type: string
@@ -221,9 +221,9 @@ content:
         default: false
         description: Ticked images appear in the Gallery section of your home page, in Order, as many as you tick. If you tick none, the first five appear. Every image is always on the full Gallery page.
       - name: alt
-        label: Image description
+        label: Alt text
         type: string
-        description: For people who cannot see the image.
+        description: "Alt text: one sentence saying what the image shows, read aloud to people who cannot see it (and used by search engines)."
       - name: weight
         label: Order
         type: number
