@@ -601,7 +601,8 @@ Building at a subfolder address matters: it is how GitHub Pages serves student s
 1. Project pages (kind "project") take a lighter case-study layout: title, year · role, caption and description in the outlined box; link buttons and tags; the image; the Sections. No label, contents list or repeated title.
 2. Briefs show no Sections (the form still offers them; the page ignores them). A brief keeps its image.
 3. Bottom block falls back to "Your Name" like the header (seen in the empty starter template).
-4. Empty starter template: `DrPhill-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
+5. Bottom block small print: "© year name · Built Month Year", the month of the build (Hugo's `now` at build time, UTC); it changes on every publish, including rebuilds with no content change.
+6. Empty starter template: `DrPhill-template-0.6.1.zip` (no content, no `docs/`, `dev/` or `CLAUDE.md`).
 Tested locally (project and brief pages with sections; `dev/check_site.py` passes).
 
 ---

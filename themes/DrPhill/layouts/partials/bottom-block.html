@@ -1,6 +1,8 @@
 {{- /*
   The big block at the bottom of every page: name, area of expertise, and a compact
   repeat of the contact links, so a visitor who scrolled to the end can reach out.
+  The small print ends with the month the site was last built ("Built November 2026"):
+  the date of the build, set on every publish, not of the last content change.
 */ -}}
 {{- $home := site.Home -}}
 {{- $name := $home.Params.name | default "Your Name" -}}
@@ -19,6 +21,6 @@
       {{- with $home.Params.resume }}<li><a href="{{ partial "url.html" . }}">Résumé (PDF)</a></li>{{ end }}
     </ul>
     {{- end }}
-    <p class="bottom-block__small"><small>© {{ now.Year }} {{ $name }}</small></p>
+    <p class="bottom-block__small"><small>© {{ now.Year }} {{ $name }} · Built {{ now.Format "January 2006" }}</small></p>
   </div>
 </footer>
