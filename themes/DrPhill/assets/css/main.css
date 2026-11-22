@@ -1096,13 +1096,15 @@ a {
   }
 
   /* The picture takes the height of its text: the row is as tall as the text (or
-     --section-image-min, if the text is shorter), and the picture fills that box,
-     cropped from the centre. Taken out of the flow so its own height doesn't set
-     the row's. On narrow screens it is shown whole, above the text. */
+     --section-image-min, if the text is shorter), and the picture shrinks to fit
+     that box whole (no cropping), kept against the text side and the top. Taken
+     out of the flow so its own height doesn't set the row's. On narrow screens it
+     is shown whole, above the text. */
   .sections__row--left .sections__image,
   .sections__row--right .sections__image {
     position: relative;
     min-block-size: var(--section-image-min);
+    background: none;               /* no tinted bands beside a narrower picture */
   }
 
   .sections__row--left .sections__image img,
@@ -1111,7 +1113,12 @@ a {
     inset: 0;
     inline-size: 100%;
     block-size: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: right top;     /* picture on the left: against the text */
+  }
+
+  .sections__row--right .sections__image img {
+    object-position: left top;      /* picture on the right: against the text */
   }
 
   /* The heading's top lines up with the picture's top. */
